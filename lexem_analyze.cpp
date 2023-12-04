@@ -3,12 +3,12 @@
 avl * lex_type;
 
 std::vector < std::invalid_argument > errors;
-std::vector < std::pair < std::string, int >> lexemes;
+std::vector < Token > lexemes;
 
 int numOfLine() {
     int n = 1;
     for (int ex = 0; ex < lexemes.size(); ++ex) {
-        if (lexemes[ex].second == 0)
+        if (lexemes[ex].level == 0)
             ++n;
     }
     return n;
@@ -25,7 +25,7 @@ void findError(std::string cur) {
     return;
 }
 
-std::vector < std::pair < std::string, int >> lexem_array;
+std::vector < Token > lexem_array;
 /* {
     {"\n", 0},    {"pribav", 1},     {"golova", 1},   {"telo", 1},
     {"zhivi", 1}, {"umri_kogda", 1}, {"idi_poka", 1}, {"ne_stanet", 1},
@@ -38,10 +38,10 @@ std::vector < std::pair < std::string, int >> lexem_array;
     {")", 5}
 };*/
 
-std::vector < std::pair < std::string, int >> lex_an(std::string text) {
+std::vector < Token > lex_an(const std::string text) {
     lexem_array = initialize_lexem_array("materials/lexic.txt");
     for (int i = 0; i < lexem_array.size(); ++i) {
-        lex_type -> insert(lex_type, lexem_array[i]);
+        lex_type -> insert(lex_type, {lexem_array[i].token, lexem_array[i].level});
     }
 
     std::string cur = "";
@@ -49,11 +49,11 @@ std::vector < std::pair < std::string, int >> lex_an(std::string text) {
         if (text[i] == ' ' || text[i] == ')' || text[i] == '(') {
             if (cur.size() != 0) {
 
-                std::pair < std::string, int > lex;
-                lex.first = ((cur == "\n") ? "\\n" : cur);
+                Token lex;
+                lex.token = ((cur == "\n") ? "\\n" : cur);
 
                 if (lex_type -> find(lex_type, cur) != -1) {
-                    lex.second = lex_type -> find(lex_type, cur);
+                    lex.level = lex_type -> find(lex_type, cur);
                 } else {
                     if ((cur[0] == '\"' || cur[cur.size() - 1] == '\"') && cur[0] != cur[cur.size() - 1]) {
                         int num_of_line = numOfLine();
@@ -63,10 +63,10 @@ std::vector < std::pair < std::string, int >> lex_an(std::string text) {
                     }
                     if (cur[0] == '\"' || isdigit(cur[0]) || cur[0] == '-' ||
                         cur[0] == '+') {
-                        lex.second = 3;
+                        lex.level = 3;
                     } else {
                         findError(cur);
-                        lex.second = 2;
+                        lex.level = 2;
                     }
                 }
 
@@ -74,11 +74,11 @@ std::vector < std::pair < std::string, int >> lex_an(std::string text) {
             }
 
             if (text[i] == ')' || text[i] == '(') {
-                std::pair < std::string, int > lex;
+                Token lex;
                 std::string s = "";
                 s += text[i];
-                lex.first = s;
-                lex.second = lex_type -> find(lex_type, s);
+                lex.token = s;
+                lex.level = lex_type -> find(lex_type, s);
                 lexemes.push_back(lex);
             }
 
@@ -89,22 +89,22 @@ std::vector < std::pair < std::string, int >> lex_an(std::string text) {
         }
     }
     if (cur.size() != 0) {
-        std::pair < std::string, int > lex;
-        lex.first = ((cur == "\n") ? "\\n" : cur);
+        Token lex;
+        lex.token = ((cur == "\n") ? "\\n" : cur);
 
         if (lex_type -> find(lex_type, cur) != -1) {
-            lex.second = lex_type -> find(lex_type, cur);
+            lex.level = lex_type -> find(lex_type, cur);
         } else {
-            if ((cur[0] == '\"' || cur[cur.size() - 1] == '\"') && cur[0] != cur[cur.size() - 1]) {
+            if ((cur[0] == '\"' || cur[cur.size() - 1] == '\"') && cur.size() > 1 && cur[0] != cur[cur.size() - 1]) {
                 int num_of_line = numOfLine();
                 errors.push_back(std::invalid_argument(
                     "in line: " + std::to_string(num_of_line) +
                     "\nInvalid character: \""));
             }
             if (cur[0] == '\"' || isdigit(cur[0]) || cur[0] == '-' || cur[0] == '+') {
-                lex.second = 3;
+                lex.level = 3;
             } else {
-                lex.second = 2;
+                lex.level = 2;
             }
         }
 

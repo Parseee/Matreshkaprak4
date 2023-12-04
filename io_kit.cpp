@@ -1,18 +1,16 @@
 #include "io_kit.h"
+#include "token.h"
 
-std::vector < std::pair < std::string, int >>
+std::vector < Token >
     initialize_lexem_array(const std::string s) {
-    std::vector < std::pair < std::string, int >> lex_array;
+    std::vector < Token > lex_array;
     std::ifstream input("materials/lexic.txt");
-    lex_array.push_back({"\n",0});
+    lex_array.push_back(Token ("\n", 0));
     std::string name;
     int priority;
     while (input.good()) {
         input >> name >> priority;
-        lex_array.push_back({
-            name,
-            priority
-        });
+        lex_array.push_back(Token(name, priority));
     }
     return lex_array;
 }

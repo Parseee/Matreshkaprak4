@@ -1,14 +1,16 @@
 #pragma once
+
+#include "avl.h"
+#include "io_kit.h"
+#include "token.h"
+
 #include <regex>
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include "avl.h"
-#include "io_kit.h"
-
 
 int numOfLine();
 
 void findError(std::string cur);
 
-std::vector < std::pair < std::string, int >> lex_an(std::string text);
+std::vector < Token > lex_an(const std::string text);

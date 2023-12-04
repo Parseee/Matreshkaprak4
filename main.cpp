@@ -1,11 +1,13 @@
-#include <iostream>
-#include <string>
 #include "io_kit.h"
 #include "lexem_analyze.h"
+#include "token.h"
+
+#include <iostream>
+#include <string>
 
 int main() {
     setlocale(LC_ALL, "en-US.UTF-8");
-    std::vector < std::pair < std::string, int >> lexes;
+    std::vector < Token > lexes;
     try {
         lexes = lex_an(read_file("materials/prgrm.rus"));
     } catch (std::vector < std::invalid_argument > e) {
@@ -13,7 +15,7 @@ int main() {
             std::cerr << "exception " << e[i].what() << "\n\n";
     }
     for (int i = 0; i < lexes.size(); ++i) {
-        std::cout << lexes[i].first << " " << lexes[i].second << std::endl;
+        std::cout << lexes[i].token << " " << lexes[i].level << std::endl;
     }
 }
 
