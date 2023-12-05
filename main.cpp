@@ -23,13 +23,3 @@ int main() {
 (pribav (telo (esli (<= +0  4)((max  6))) (ubav c66 +0)))
 (func p9 () (not ywvo -9))
 */
-
-void foo() {
-    std::cout << "hfbvi";
-    return;
-}
-
-void bar (){
-    std::cout << <<"sdkjnds";
-    return;
-}
