@@ -28,3 +28,8 @@ void foo() {
     std::cout << "hfbvi";
     return;
 }
+
+void bar (){
+    std::cout << <<"sdkjnds";
+    return;
+}
