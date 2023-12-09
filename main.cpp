@@ -33,3 +33,7 @@ int main(int argc, char * argv[]) {
 
 
 //added comment
+
+void foo() {
+    std::cout << "bar";
+}
