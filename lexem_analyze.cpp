@@ -1,4 +1,4 @@
-#include "lexem_analyze.h"
+#include "headers/lexem_analyze.h"
 
 avl * lex_type;
 

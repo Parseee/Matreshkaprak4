@@ -14,7 +14,7 @@
 <d_num_extr> ::= <num> <d_num_extr> | <empty>
 <str> ::= <char> <str_extr>
 <str_extr> ::= <char> <str_extr> | <empty>
-<oper> ::= <easy_oper> | <hard_oper> | <func> | <car> | <cdr> | <empty>
+<oper> ::= <easy_oper> | <hard_oper> | <func> | <car> | <cdr> /*| <empty> */
 <easy_oper> ::= <simple_oper> | <cond_oper>
 <argf> ::= <var> | <sign> <num> | "(" <oper> ")"
 <simple_oper> ::= <simple> ( " " <argf> )+

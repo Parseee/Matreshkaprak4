@@ -1,5 +1,5 @@
-#include "io_kit.h"
-#include "token.h"
+#include "headers/io_kit.h"
+#include "headers/token.h"
 
 std::vector < Token >
     initialize_lexem_array(const std::string s) {

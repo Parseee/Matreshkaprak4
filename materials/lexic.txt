@@ -11,11 +11,14 @@ func 1
 esli 1
 tovarisch 1
 verni 1
+PRAVDA 3
+LOZH 3
 + 4
 - 4
 * 4
 / 4
 ! 4
+partia 4
 ubav 4
 max 4
 min 4

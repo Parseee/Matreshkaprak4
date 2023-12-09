@@ -1,11 +1,12 @@
-#include "io_kit.h"
-#include "lexem_analyze.h"
-#include "token.h"
+#include "headers/io_kit.h"
+#include "headers/lexem_analyze.h"
+#include "headers/token.h"
+#include "headers/parse.h"
 
 #include <iostream>
 #include <string>
 
-int main() {
+int main(int argc, char * argv[]) {
     setlocale(LC_ALL, "en-US.UTF-8");
     std::vector < Token > lexes;
     try {
@@ -16,6 +17,12 @@ int main() {
     }
     for (int i = 0; i < lexes.size(); ++i) {
         std::cout << lexes[i].token << " " << lexes[i].level << std::endl;
+    }
+    try {
+        Parser parser(lexes);
+        parser.parse();
+    } catch (std::logic_error e) {
+        std::cout << e.what() << std::endl;
     }
 }
 

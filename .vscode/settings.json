@@ -69,5 +69,12 @@
         "typeinfo": "cpp",
         "unordered_map": "cpp",
         "vector": "cpp"
-    }
+    },
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4",
+            "binaryPath": "/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/main",
+            "binaryArgs": []
+        }
+    ]
 }
