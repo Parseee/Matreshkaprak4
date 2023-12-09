@@ -1,0 +1,11 @@
+# ninja log v5
+13	3094	1702105237499466012	CMakeFiles/matreshka_prac.dir/main.cpp.o	da9d5b1e4af12e26
+19	4568	1702105238971447211	CMakeFiles/matreshka_prac.dir/parse.cpp.o	462eeebfc48cd40d
+16	3180	1702105237587593560	CMakeFiles/matreshka_prac.dir/io_kit.cpp.o	2683506addb36623
+17	4967	1702105239377026363	CMakeFiles/matreshka_prac.dir/lexem_analyze.cpp.o	d053303f77972252
+4967	5172	1702105239590947418	matreshka_prac	3f2a0cb188da893e
+7	2940	1702105278565366387	CMakeFiles/matreshka_prac.dir/io_kit.cpp.o	7ed5b79665337555
+6	2982	1702105278596875278	CMakeFiles/matreshka_prac.dir/main.cpp.o	9342654a2561e65e
+9	4675	1702105280299519018	CMakeFiles/matreshka_prac.dir/parse.cpp.o	dae6ed76d74847de
+7	5008	1702105280635307035	CMakeFiles/matreshka_prac.dir/lexem_analyze.cpp.o	4e7e88bc0da9387b
+5008	5161	1702105280794445668	matreshka_prac	8968167191457837
