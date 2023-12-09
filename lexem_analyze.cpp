@@ -36,7 +36,7 @@ std::vector < Token > lexem_array;
     {"not", 4},   {"=", 4},          {"/=", 4},       {">", 4},
     {"<", 4},     {">=", 4},         {"<=", 4},       {"(", 5},
     {")", 5}
-};*/
+}; */
 
 std::vector < Token > lex_an(const std::string text) {
     lexem_array = initialize_lexem_array("materials/lexic.txt");

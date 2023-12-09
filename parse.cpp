@@ -31,11 +31,13 @@ void Parser::parse() {
 
 // <s_exp> ::= "(" <oper> ") " <s_exp> | <empty>
 void Parser::s_exp() {
+    return;
     if (c.token != "(") {
         throw std::logic_error(c.token);
     }
     c = gc();
     oper();
+    c = gc();
     if (c.token != ")") {
         throw std::logic_error(c.token);
     }
@@ -44,13 +46,12 @@ void Parser::s_exp() {
 // <oper> ::= <easy_oper> | <hard_oper> | <func> | <car> | <cdr> | <empty>
 void Parser::oper() {
     // simple_oper ----------------------------
-    if (std::regex_search(c.token, std::regex("[+-*/|max|min]"))) {
-        std::cout << "here ";
+    if (std::regex_match(c.token, std::regex("/+|-|/*|max|min"))) {
         c = gc();
         simple_oper();
     }
     // cond_oper ------------------------------
-    else if (std::regex_search(c.token, std::regex("[takzhe|libo|=|/=|>|<|>=|<=]"))) {
+    if (std::regex_match(c.token, std::regex("takzhe|libo|=|>|<|>=|<="))) {
         c = gc();
         cond_oper();
     }
@@ -175,8 +176,6 @@ void Parser::loop_for() {
     }
     // c = gc();
 }
-
-
 
 void Parser::loop() {
     if (c.level != 2 && c.level != 3) {
@@ -375,6 +374,10 @@ void Parser::arg() {
     } else if (c.token == "(") {
         c = gc();
         oper();
+        c = gc();
+        if (c.token != ")") {
+            throw std::logic_error(c.token);
+        }
     } else {
         throw std::logic_error(c.token);
     }
