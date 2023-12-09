@@ -1,5 +1,5 @@
-/Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build/CMakeFiles/matreshka_prac.dir
-/Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build/CMakeFiles/package.dir
-/Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build/CMakeFiles/package_source.dir
-/Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build/CMakeFiles/edit_cache.dir
-/Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build/CMakeFiles/rebuild_cache.dir
+/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build/CMakeFiles/matreshka_prac.dir
+/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build/CMakeFiles/package.dir
+/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build/CMakeFiles/package_source.dir
+/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build/CMakeFiles/edit_cache.dir
+/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build/CMakeFiles/rebuild_cache.dir

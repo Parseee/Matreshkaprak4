@@ -4,8 +4,8 @@
 
 
 # Configuration directories and files
-SourceDirectory: /Users/ilababakov/Documents/translator/matreshkaprak4_cmake
-BuildDirectory: /Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build
+SourceDirectory: /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4
+BuildDirectory: /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build
 
 # Where to place the cost data store
 CostDataFile: 
@@ -27,7 +27,7 @@ SubmitInactivityTimeout:
 NightlyStartTime: 00:00:00 EDT
 
 # Commands for the build/test/submit cycle
-ConfigureCommand: "/usr/local/Cellar/cmake/3.27.8/bin/cmake" "/Users/ilababakov/Documents/translator/matreshkaprak4_cmake"
+ConfigureCommand: "/usr/local/Cellar/cmake/3.27.8/bin/cmake" "/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4"
 MakeCommand: /usr/local/Cellar/cmake/3.27.8/bin/cmake --build . --config "${CTEST_CONFIGURATION_TYPE}"
 DefaultCTestConfigurationType: Release
 
@@ -45,7 +45,7 @@ SVNOptions:
 SVNUpdateOptions: 
 
 # Git options
-GITCommand: 
+GITCommand: /usr/local/bin/git
 GITInitSubmodules: 
 GITUpdateOptions: 
 GITUpdateCustom: 
@@ -58,9 +58,9 @@ P4UpdateOptions:
 P4UpdateCustom: 
 
 # Generic update command
-UpdateCommand: 
+UpdateCommand: /usr/local/bin/git
 UpdateOptions: 
-UpdateType: 
+UpdateType: git
 
 # Compiler info
 Compiler: /usr/bin/clang++

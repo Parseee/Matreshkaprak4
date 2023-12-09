@@ -39,7 +39,7 @@ include CMakeFiles/rules.ninja
 #############################################
 # Logical path to working directory; prefix for absolute paths.
 
-cmake_ninja_workdir = /Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build/
+cmake_ninja_workdir = /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build/
 # =============================================================================
 # Object build statements for EXECUTABLE target matreshka_prac
 
@@ -49,25 +49,25 @@ cmake_ninja_workdir = /Users/ilababakov/Documents/translator/matreshkaprak4_cmak
 
 build cmake_object_order_depends_target_matreshka_prac: phony || CMakeFiles/matreshka_prac.dir
 
-build CMakeFiles/matreshka_prac.dir/main.cpp.o: CXX_COMPILER__matreshka_prac_unscanned_Debug /Users/ilababakov/Documents/translator/matreshkaprak4_cmake/main.cpp || cmake_object_order_depends_target_matreshka_prac
+build CMakeFiles/matreshka_prac.dir/main.cpp.o: CXX_COMPILER__matreshka_prac_unscanned_Debug /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/main.cpp || cmake_object_order_depends_target_matreshka_prac
   DEP_FILE = CMakeFiles/matreshka_prac.dir/main.cpp.o.d
   FLAGS = -std=c++20 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk -mmacosx-version-min=11.7
   OBJECT_DIR = CMakeFiles/matreshka_prac.dir
   OBJECT_FILE_DIR = CMakeFiles/matreshka_prac.dir
 
-build CMakeFiles/matreshka_prac.dir/io_kit.cpp.o: CXX_COMPILER__matreshka_prac_unscanned_Debug /Users/ilababakov/Documents/translator/matreshkaprak4_cmake/io_kit.cpp || cmake_object_order_depends_target_matreshka_prac
+build CMakeFiles/matreshka_prac.dir/io_kit.cpp.o: CXX_COMPILER__matreshka_prac_unscanned_Debug /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/io_kit.cpp || cmake_object_order_depends_target_matreshka_prac
   DEP_FILE = CMakeFiles/matreshka_prac.dir/io_kit.cpp.o.d
   FLAGS = -std=c++20 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk -mmacosx-version-min=11.7
   OBJECT_DIR = CMakeFiles/matreshka_prac.dir
   OBJECT_FILE_DIR = CMakeFiles/matreshka_prac.dir
 
-build CMakeFiles/matreshka_prac.dir/lexem_analyze.cpp.o: CXX_COMPILER__matreshka_prac_unscanned_Debug /Users/ilababakov/Documents/translator/matreshkaprak4_cmake/lexem_analyze.cpp || cmake_object_order_depends_target_matreshka_prac
+build CMakeFiles/matreshka_prac.dir/lexem_analyze.cpp.o: CXX_COMPILER__matreshka_prac_unscanned_Debug /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/lexem_analyze.cpp || cmake_object_order_depends_target_matreshka_prac
   DEP_FILE = CMakeFiles/matreshka_prac.dir/lexem_analyze.cpp.o.d
   FLAGS = -std=c++20 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk -mmacosx-version-min=11.7
   OBJECT_DIR = CMakeFiles/matreshka_prac.dir
   OBJECT_FILE_DIR = CMakeFiles/matreshka_prac.dir
 
-build CMakeFiles/matreshka_prac.dir/parse.cpp.o: CXX_COMPILER__matreshka_prac_unscanned_Debug /Users/ilababakov/Documents/translator/matreshkaprak4_cmake/parse.cpp || cmake_object_order_depends_target_matreshka_prac
+build CMakeFiles/matreshka_prac.dir/parse.cpp.o: CXX_COMPILER__matreshka_prac_unscanned_Debug /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/parse.cpp || cmake_object_order_depends_target_matreshka_prac
   DEP_FILE = CMakeFiles/matreshka_prac.dir/parse.cpp.o.d
   FLAGS = -std=c++20 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk -mmacosx-version-min=11.7
   OBJECT_DIR = CMakeFiles/matreshka_prac.dir
@@ -94,7 +94,7 @@ build matreshka_prac: CXX_EXECUTABLE_LINKER__matreshka_prac_Debug CMakeFiles/mat
 # Utility command for package
 
 build CMakeFiles/package.util: CUSTOM_COMMAND all
-  COMMAND = cd /Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build && /usr/local/Cellar/cmake/3.27.8/bin/cpack --config ./CPackConfig.cmake
+  COMMAND = cd /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build && /usr/local/Cellar/cmake/3.27.8/bin/cpack --config ./CPackConfig.cmake
   DESC = Run CPack packaging tool...
   pool = console
   restat = 1
@@ -106,7 +106,7 @@ build package: phony CMakeFiles/package.util
 # Utility command for package_source
 
 build CMakeFiles/package_source.util: CUSTOM_COMMAND
-  COMMAND = cd /Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build && /usr/local/Cellar/cmake/3.27.8/bin/cpack --config ./CPackSourceConfig.cmake /Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build/CPackSourceConfig.cmake
+  COMMAND = cd /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build && /usr/local/Cellar/cmake/3.27.8/bin/cpack --config ./CPackSourceConfig.cmake /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build/CPackSourceConfig.cmake
   DESC = Run CPack packaging tool for source...
   pool = console
   restat = 1
@@ -118,7 +118,7 @@ build package_source: phony CMakeFiles/package_source.util
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build && /usr/local/Cellar/cmake/3.27.8/bin/ccmake -S/Users/ilababakov/Documents/translator/matreshkaprak4_cmake -B/Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build
+  COMMAND = cd /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build && /usr/local/Cellar/cmake/3.27.8/bin/ccmake -S/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4 -B/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -130,7 +130,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build && /usr/local/Cellar/cmake/3.27.8/bin/cmake --regenerate-during-build -S/Users/ilababakov/Documents/translator/matreshkaprak4_cmake -B/Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build
+  COMMAND = cd /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build && /usr/local/Cellar/cmake/3.27.8/bin/cmake --regenerate-during-build -S/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4 -B/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -146,7 +146,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 
 #############################################
-# Folder: /Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build
+# Folder: /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build
 
 build all: phony matreshka_prac
 
@@ -157,14 +157,14 @@ build all: phony matreshka_prac
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | /Users/ilababakov/Documents/translator/matreshkaprak4_cmake/CMakeLists.txt /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeCInformation.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeCXXInformation.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeGenericSystem.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/AppleClang-C.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/AppleClang-CXX.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/Clang.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/GNU.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-AppleClang-C.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-AppleClang-CXX.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-Clang-C.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-Clang-CXX.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-Clang.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Darwin-Initialize.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Darwin.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.27.8/CMakeCCompiler.cmake CMakeFiles/3.27.8/CMakeCXXCompiler.cmake CMakeFiles/3.27.8/CMakeSystem.cmake
+build build.ninja: RERUN_CMAKE | /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/CMakeLists.txt /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeCInformation.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeCXXInformation.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeGenericSystem.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/AppleClang-C.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/AppleClang-CXX.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/Clang.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/GNU.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-AppleClang-C.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-AppleClang-CXX.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-Clang-C.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-Clang-CXX.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-Clang.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Darwin-Initialize.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Darwin.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.27.8/CMakeCCompiler.cmake CMakeFiles/3.27.8/CMakeCXXCompiler.cmake CMakeFiles/3.27.8/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build /Users/ilababakov/Documents/translator/matreshkaprak4_cmake/CMakeLists.txt /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeCInformation.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeCXXInformation.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeGenericSystem.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/AppleClang-C.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/AppleClang-CXX.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/Clang.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/GNU.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-AppleClang-C.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-AppleClang-CXX.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-Clang-C.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-Clang-CXX.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-Clang.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Darwin-Initialize.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Darwin.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.27.8/CMakeCCompiler.cmake CMakeFiles/3.27.8/CMakeCXXCompiler.cmake CMakeFiles/3.27.8/CMakeSystem.cmake: phony
+build /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/CMakeLists.txt /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeCInformation.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeCXXInformation.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeGenericSystem.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/AppleClang-C.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/AppleClang-CXX.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/Clang.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Compiler/GNU.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-AppleClang-C.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-AppleClang-CXX.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-Clang-C.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-Clang-CXX.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Apple-Clang.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Darwin-Initialize.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/Darwin.cmake /usr/local/Cellar/cmake/3.27.8/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.27.8/CMakeCCompiler.cmake CMakeFiles/3.27.8/CMakeCXXCompiler.cmake CMakeFiles/3.27.8/CMakeSystem.cmake: phony
 
 
 #############################################

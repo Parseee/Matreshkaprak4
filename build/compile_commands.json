@@ -1,26 +1,26 @@
 [
 {
-  "directory": "/Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build",
-  "command": "/usr/bin/clang++ -std=c++20 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk -mmacosx-version-min=11.7 -o CMakeFiles/matreshka_prac.dir/main.cpp.o -c /Users/ilababakov/Documents/translator/matreshkaprak4_cmake/main.cpp",
-  "file": "/Users/ilababakov/Documents/translator/matreshkaprak4_cmake/main.cpp",
+  "directory": "/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build",
+  "command": "/usr/bin/clang++ -std=c++20 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk -mmacosx-version-min=11.7 -o CMakeFiles/matreshka_prac.dir/main.cpp.o -c /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/main.cpp",
+  "file": "/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/main.cpp",
   "output": "CMakeFiles/matreshka_prac.dir/main.cpp.o"
 },
 {
-  "directory": "/Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build",
-  "command": "/usr/bin/clang++ -std=c++20 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk -mmacosx-version-min=11.7 -o CMakeFiles/matreshka_prac.dir/io_kit.cpp.o -c /Users/ilababakov/Documents/translator/matreshkaprak4_cmake/io_kit.cpp",
-  "file": "/Users/ilababakov/Documents/translator/matreshkaprak4_cmake/io_kit.cpp",
+  "directory": "/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build",
+  "command": "/usr/bin/clang++ -std=c++20 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk -mmacosx-version-min=11.7 -o CMakeFiles/matreshka_prac.dir/io_kit.cpp.o -c /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/io_kit.cpp",
+  "file": "/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/io_kit.cpp",
   "output": "CMakeFiles/matreshka_prac.dir/io_kit.cpp.o"
 },
 {
-  "directory": "/Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build",
-  "command": "/usr/bin/clang++ -std=c++20 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk -mmacosx-version-min=11.7 -o CMakeFiles/matreshka_prac.dir/lexem_analyze.cpp.o -c /Users/ilababakov/Documents/translator/matreshkaprak4_cmake/lexem_analyze.cpp",
-  "file": "/Users/ilababakov/Documents/translator/matreshkaprak4_cmake/lexem_analyze.cpp",
+  "directory": "/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build",
+  "command": "/usr/bin/clang++ -std=c++20 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk -mmacosx-version-min=11.7 -o CMakeFiles/matreshka_prac.dir/lexem_analyze.cpp.o -c /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/lexem_analyze.cpp",
+  "file": "/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/lexem_analyze.cpp",
   "output": "CMakeFiles/matreshka_prac.dir/lexem_analyze.cpp.o"
 },
 {
-  "directory": "/Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build",
-  "command": "/usr/bin/clang++ -std=c++20 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk -mmacosx-version-min=11.7 -o CMakeFiles/matreshka_prac.dir/parse.cpp.o -c /Users/ilababakov/Documents/translator/matreshkaprak4_cmake/parse.cpp",
-  "file": "/Users/ilababakov/Documents/translator/matreshkaprak4_cmake/parse.cpp",
+  "directory": "/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build",
+  "command": "/usr/bin/clang++ -std=c++20 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk -mmacosx-version-min=11.7 -o CMakeFiles/matreshka_prac.dir/parse.cpp.o -c /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/parse.cpp",
+  "file": "/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/parse.cpp",
   "output": "CMakeFiles/matreshka_prac.dir/parse.cpp.o"
 }
 ]

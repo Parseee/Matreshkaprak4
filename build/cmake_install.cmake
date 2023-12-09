@@ -1,4 +1,4 @@
-# Install script for directory: /Users/ilababakov/Documents/translator/matreshkaprak4_cmake
+# Install script for directory: /Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/ilababakov/Documents/translator/matreshkaprak4_cmake/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
