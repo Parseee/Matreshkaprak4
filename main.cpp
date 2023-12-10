@@ -11,20 +11,21 @@ int main() {
     std::vector < Token > lexes;
     try {
         lexes = lex_an(read_file("/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/materials/prgrm.rus"));
-        //lexes = lex_an("(takzhe x y)");
     } catch (std::vector < std::invalid_argument > e) {
         for (int i = 0; i < e.size(); i++)
             std::cerr << "exception " << e[i].what() << "\n\n";
     }
     for (int i = 0; i < lexes.size(); ++i) {
-        std::cout << lexes[i].token << " " << lexes[i].level << std::endl;
+        std::cout << i + 1 << ":  " << lexes[i].token << " " << lexes[i].level << std::endl;
     }
     try {
         Parser parser(lexes);
         parser.parse();
     } catch (std::logic_error e) {
-        std::cout << e.what() << std::endl;
+        std::cerr << "Exception in lexem: " << e.what() << std::endl;
+        return 0;
     }
+    std::cout << "Syntax analysis complete sucsessfully";
 }
 
 /*

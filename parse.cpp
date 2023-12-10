@@ -12,11 +12,10 @@ Parser::Parser (std::vector < Token > tokens) :
 
 Token Parser::gc() {
     if (!is_at_end()) {
-        // maybe add checking for EOF here
         return tokens[current++];
     } else {
         // maybe add another info
-        throw std::out_of_range("Unexpected end");
+        throw std::logic_error("Unexpected end gc" + std::to_string(current - 1));
     }
 }
 
@@ -29,17 +28,27 @@ void Parser::parse() {
     s_exp();
 }
 
-// <s_exp> ::= "(" <oper> ") " <s_exp> | <empty>
+// <s_exp> ::= "(" <oper> ") " | <s_exp> 
 void Parser::s_exp() {
-    return;
     if (c.token != "(") {
-        throw std::logic_error(c.token);
+        throw std::logic_error(c.token + " s_exp" + std::to_string(current - 1));
     }
     c = gc();
+    if (c.token == "func") {
+        c = gc();
+        func();
+        c = gc();
+        return;
+    }
     oper();
     c = gc();
     if (c.token != ")") {
-        throw std::logic_error(c.token);
+        throw std::logic_error(c.token + " s_exp" + std::to_string(current - 1));
+    }
+    // for extending s_exp
+    if (static_cast < size_t > (current) < tokens.size()) {
+        c = gc();
+        s_exp();
     }
 }
 
@@ -51,7 +60,7 @@ void Parser::oper() {
         simple_oper();
     }
     // cond_oper ------------------------------
-    if (std::regex_match(c.token, std::regex("takzhe|libo|=|>|<|>=|<="))) {
+    else if (std::regex_match(c.token, std::regex("takzhe|libo|=|>|<|>=|<=|cons|golova|telo"))) {
         c = gc();
         cond_oper();
     }
@@ -65,7 +74,6 @@ void Parser::oper() {
     else if (c.token == "zhivi") {
         c = gc();
         loop();
-        // throw something
     }
     // if ---------------------
     else if (c.token == "esli") {
@@ -92,12 +100,12 @@ void Parser::oper() {
         c = gc();
         ne();
     }
-    // incf ------------------- problem with arg
+    // incf -------------------
     else if (c.token == "pribav") {
         c = gc();
         incf();
     }
-    // decf ------------------- problem with arg
+    // decf -------------------
     else if (c.token == "ubav") {
         c = gc();
         decf();
@@ -117,11 +125,6 @@ void Parser::oper() {
         c = gc();
         setf();
     }
-    // func -----------------------------------
-    else if (c.token == "func") {
-        c = gc();
-        func();
-    }
     // car ------------------------------------
     else if (c.token == "golova") {
         c = gc();
@@ -135,15 +138,20 @@ void Parser::oper() {
     // cons -----------------------------------
     else if (c.token == "partia") {
         c = gc();
+        if (c.token != "(") {
+            throw std::logic_error(c.token + " partia " + std::to_string(current - 1));
+        }
+        c = gc();
         arg();
         while (c.token != ")") {
             arg();
         }
     }
-    // epsilon-rule
     else {
         // all good
+        return;
     }
+    return;
 }
 
 void Parser::simple_oper() {
@@ -151,7 +159,7 @@ void Parser::simple_oper() {
     while (c.token != ")") {
         arg();
     }
-    // c = gc();
+    return;
 }
 
 void Parser::cond_oper() {
@@ -159,103 +167,105 @@ void Parser::cond_oper() {
     while (c.token != ")") {
         arg();
     }
-    // c = gc();
+    return;
 }
 
 void Parser::loop_for() {
-    // var
     if (c.level == 2 || c.level == 3) {
         c = gc();
         if (c.token == "ne_stanet") {
             c = gc();
             if (c.level == 2 || c.level == 3) {
                 c = gc();
-                // call s_exp
+                oper();
+                c = gc();
             }
         }
     }
-    // c = gc();
+    return;
 }
 
 void Parser::loop() {
-    if (c.level != 2 && c.level != 3) {
-        throw std::logic_error(c.token);
-    }
-
     c = gc();
-    s_exp();
+    oper();
+    c = gc();
     if (c.token != "(") {
-        throw std::logic_error(c.token);
+        throw std::logic_error(c.token + " loop" + std::to_string(current - 1));
     }
     
     c = gc();
-    if (c.token != "umri_cogda") {
-        throw std::logic_error(c.token);
+    if (c.token != "umri_kogda") {
+        throw std::logic_error(c.token + " loop" + std::to_string(current - 1));
     }
 
     c = gc();
     if (c.token != "(") {
-    throw std::logic_error(c.token);
+        throw std::logic_error(c.token + " loop" + std::to_string(current - 1));
     }
 
     c = gc();
-    if (!std::regex_search(c.token, std::regex("takzhe|libo|=|/=|>|<|>=|<="))) {
-        throw std::logic_error(c.token);
+    if (!std::regex_match(c.token, std::regex("takzhe|libo|=|/=|>|<|>=|<="))) {
+        throw std::logic_error(c.token + " loop" + std::to_string(current - 1));
     }
 
     c = gc();
+    // if we cant compare a lot of operands switch while to if
     while (c.token != ")") {
-        c = gc();
         arg();
     }
     
     c = gc();
-    if (c.token != ")") {
-        throw std::logic_error(c.token); 
+    if (c.token != "(") {
+        throw std::logic_error(c.token + " loop" + std::to_string(current - 1)); 
     }
 
     c = gc();
     if (c.token != "verni") {
-        throw std::logic_error(c.token);
+        throw std::logic_error(c.token + " loop" + std::to_string(current - 1));
     }
 
-    c = gc();
-    arg();
+    c = gc(); // get (
+    ret_op();
+    if (c.token != ")") { // end of return
+        throw std::logic_error(c.token + " loop" + std::to_string(current - 1));
+    }
+
+    c = gc(); // end of loop
     if (c.token != ")") {
-        throw std::logic_error(c.token);
+        throw std::logic_error(c.token + " loop" + std::to_string(current - 1));
     }
 }
 
 void Parser::if_op() {
     if (c.token != "(") {
-        throw std::logic_error(c.token);
+        throw std::logic_error(c.token + " if" + std::to_string(current - 1));
     }
     
     c = gc();
-    if (!std::regex_search(c.token, std::regex("takzhe|libo|=|/=|>|<|>=|<="))) {
-        throw std::logic_error(c.token);
+    if (!std::regex_match(c.token, std::regex("takzhe|libo|=|/=|>|<|>=|<="))) {
+        throw std::logic_error(c.token + " if" + std::to_string(current - 1));
     }
 
     c = gc();
     arg();
     while (c.token != ")") {
-        c = gc();
+        // c = gc();
         arg();
     }
 
     if (c.token != ")") {
-        throw std::logic_error(c.token);
+        throw std::logic_error(c.token + " if" + std::to_string(current - 1));
     }
 
     c = gc();
     if (c.token != "(") {
-        throw std::logic_error(c.token);
+        throw std::logic_error(c.token + " if" + std::to_string(current - 1));
     }
 
     c = gc();
     oper();
     if (c.token != ")") {
-        throw std::logic_error(c.token);
+        throw std::logic_error(c.token + " if" + std::to_string(current - 1));
     }
     s_exp();
 }
@@ -279,7 +289,7 @@ void Parser::ne() {
 void Parser::incf() {
     arg();
     if (c.token != ")") {
-        c = gc();
+        //c = gc();
         arg();
     }
 }
@@ -287,7 +297,7 @@ void Parser::incf() {
 void Parser::decf() {
     arg();
     if (c.token != ")") {
-        c = gc();
+        //c = gc();
         arg();
     }
 }
@@ -313,39 +323,28 @@ void Parser::setf() {
 
 void Parser::func() {
     if (c.level != 2) { // name
-        throw std::logic_error(c.token);
-    }
-
-    c = gc();
-    if (c.level != 2 && c.level != 3) {
-        throw std::logic_error(c.token);
+        throw std::logic_error(c.token + " no function name " + std::to_string(current - 1));
     }
 
     c = gc();
     if (c.token != "(") {
-        throw std::logic_error(c.token);
+        throw std::logic_error(c.token + " bad func parenthesis " + std::to_string(current - 1));
     }
 
     c = gc();
     while (c.token != ")") {
-        c = gc();
         if (c.level != 2 && c.level != 3) {
-            throw std::logic_error(c.token);
+            throw std::logic_error(c.token + " bad func arg arguments " + std::to_string(current - 1));
         }
+        c = gc();
     }
 
     if (c.token != ")") {
-        throw std::logic_error(c.token);
+        throw std::logic_error(c.token + " bad func arg parenthesis " + std::to_string(current - 1));
     }
 
     c = gc();
-    s_exp();
-    if (c.token != "(") {
-        throw std::logic_error(c.token);
-    }
-
-    c = gc();
-    ret_op();
+    oper();
 }
 
 void Parser::car() {
@@ -360,7 +359,7 @@ void Parser::cons() {
     arg();
 
     while (c.token != ")") {
-        c = gc();
+        // c = gc();
         arg();
     }
 }
@@ -376,9 +375,12 @@ void Parser::arg() {
         oper();
         c = gc();
         if (c.token != ")") {
-            throw std::logic_error(c.token);
+            throw std::logic_error(c.token + " arg " + std::to_string(current - 1));
         }
+    } else if (c.token == ")") {
+        return;
     } else {
-        throw std::logic_error(c.token);
+        throw std::logic_error(c.token + " arg " + std::to_string(current - 1));
     }
+    return;
 }
