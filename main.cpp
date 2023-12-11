@@ -22,7 +22,7 @@ int main() {
         Parser parser(lexes);
         parser.parse();
     } catch (std::logic_error e) {
-        std::cerr << "Exception in line: " << e.what() << std::endl;
+        std::cerr << "Exception " << e.what() << std::endl;
         return 0;
     }
     std::cout << "Syntax analysis complete sucsessfully\n";
