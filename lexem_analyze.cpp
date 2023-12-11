@@ -61,7 +61,14 @@ std::vector < Token > lex_an(const std::string text) {
                             "In line: " + std::to_string(num_of_line) +
                             "\nInvalid character: \""));
                     }
-                    if (cur[0] == '\"' || isdigit(cur[0]) || cur[0] == '-' ||
+
+                    if ((cur[0] == '\'' || cur[cur.size() - 1] == '\'') && cur[0] != cur[cur.size() - 1]) {
+                        int num_of_line = numOfLine();
+                        errors.push_back(std::invalid_argument(
+                            "In line: " + std::to_string(num_of_line) +
+                            "\nInvalid character: \'"));
+                    }
+                    if (cur[0] == '\"' || cur[0] == '\'' || isdigit(cur[0]) || cur[0] == '-' ||
                         cur[0] == '+') {
                         lex.level = 3;
                     } else {
