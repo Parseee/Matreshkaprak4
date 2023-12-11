@@ -46,7 +46,34 @@ std::vector < Token > lex_an(const std::string text) {
 
     std::string cur = "";
     for (int i = 0; i < text.size(); ++i) {
-        if (text[i] == ' ' || text[i] == ')' || text[i] == '(') {
+        if(text[i] == '\"'){
+            cur += text[i++];
+            while(text[i] != '\"' && i < text.size()){
+                cur += text[i++];
+            }
+            if(i < text.size()){
+                cur += text[i++];
+            } else {
+                int num_of_line = numOfLine();
+                        errors.push_back(std::invalid_argument(
+                            "In line: " + std::to_string(num_of_line) +
+                            "\nInvalid character: \""));
+            }
+            Token lex;
+            lex.token = cur;
+            lex.level = 3;
+            lexemes.push_back(lex);
+            if (text[i] == ')' || text[i] == '(') {
+                Token lex;
+                std::string s = "";
+                s += text[i];
+                lex.token = s;
+                lex.level = lex_type -> find(lex_type, s);
+                lexemes.push_back(lex);
+            }
+            cur = "";
+        } 
+        else if (text[i] == ' ' || text[i] == ')' || text[i] == '(') {
             if (cur.size() != 0) {
 
                 Token lex;
@@ -55,13 +82,6 @@ std::vector < Token > lex_an(const std::string text) {
                 if (lex_type -> find(lex_type, cur) != -1) {
                     lex.level = lex_type -> find(lex_type, cur);
                 } else {
-                    if ((cur[0] == '\"' || cur[cur.size() - 1] == '\"') && cur[0] != cur[cur.size() - 1]) {
-                        int num_of_line = numOfLine();
-                        errors.push_back(std::invalid_argument(
-                            "In line: " + std::to_string(num_of_line) +
-                            "\nInvalid character: \""));
-                    }
-
                     if ((cur[0] == '\'' || cur[cur.size() - 1] == '\'') && cur[0] != cur[cur.size() - 1]) {
                         int num_of_line = numOfLine();
                         errors.push_back(std::invalid_argument(
@@ -91,7 +111,6 @@ std::vector < Token > lex_an(const std::string text) {
 
             cur = "";
         } else {
-
             cur += text[i];
         }
     }

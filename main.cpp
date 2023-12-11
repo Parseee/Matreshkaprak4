@@ -10,7 +10,7 @@ int main() {
     setlocale(LC_ALL, "en-US.UTF-8");
     std::vector < Token > lexes;
     try {
-        lexes = lex_an(read_file("/Users/ilababakov/Documents/code/study_solutions/prac/Matreshkaprak4/materials/prgrm.rus"));
+        lexes = lex_an(read_file("materials/prgrm.rus"));
     } catch (std::vector < std::invalid_argument > e) {
         for (int i = 0; i < e.size(); i++)
             std::cerr << "exception " << e[i].what() << "\n\n";
@@ -22,10 +22,10 @@ int main() {
         Parser parser(lexes);
         parser.parse();
     } catch (std::logic_error e) {
-        std::cerr << "Exception in lexem: " << e.what() << std::endl;
+        std::cerr << "Exception in line: " << e.what() << std::endl;
         return 0;
     }
-    std::cout << "Syntax analysis complete sucsessfully";
+    std::cout << "Syntax analysis complete sucsessfully\n";
 }
 
 /*

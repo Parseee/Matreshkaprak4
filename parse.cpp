@@ -14,13 +14,13 @@ Parser::Parser (std::vector < Token > tokens) :
 Token Parser::gc() {
     if (!is_at_end()) {
         if (tokens[current].token == "\\n") {
-            ++current;
+            ++num_of_line;
             ++num_of_line;
         }
         return tokens[current++];
     } else {
         // maybe add another info
-        throw std::logic_error("Unexpected end gc" + std::to_string(current));
+        throw std::logic_error("Unexpected end gc");
     }
 }
 
@@ -36,7 +36,7 @@ void Parser::parse() {
 // <s_exp> ::= "(" <oper> ") " | <s_exp> 
 void Parser::s_exp() {
     if (c.token != "(") {
-        throw std::logic_error(c.token + " s_exp " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " s_exp open parent ");
     }
     c = gc();
     if (c.token == "func") {
@@ -45,11 +45,11 @@ void Parser::s_exp() {
     } else {
         oper();
         if (c.token != ")") {
-            throw std::logic_error(c.token + " s_exp " + std::to_string(current));
+            throw std::logic_error(std::to_string(num_of_line) + std::to_string(num_of_line) + ". In lexem: " + c.token +  " s_exp close parent ");
         }
     }
     // for extending s_exp
-    if (static_cast < size_t > (current) < tokens.size()) {
+    if (static_cast < size_t > (num_of_line) < tokens.size()) {
         c = gc();
         s_exp();
     }
@@ -137,7 +137,7 @@ void Parser::oper() {
             c = gc();
             func_call();
         } else {
-            throw std::logic_error(c.token + " bad oper " + std::to_string(current));
+            throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " bad oper ");
         }
     }
 }
@@ -158,11 +158,11 @@ void Parser::cond_oper() {
 
 void Parser::loop_for() {
     if (c.level != 2) {
-        throw std::logic_error(c.token + " var loop_for " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " var loop_for ");
     }
     c = gc();
     if (c.token != "ne_stanet") {
-        throw std::logic_error(c.token + " ne_stanet loop_for " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " ne_stanet loop_for ");
     }
     c = gc();
     arg();
@@ -170,12 +170,12 @@ void Parser::loop_for() {
     //c = gc();
     while (true) {
         if (c.token != "(") {
-            throw std::logic_error(c.token + " loop_for open parent oper " + std::to_string(current));
+            throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " loop_for open parent oper ");
         }
         c = gc();
         oper();
         if (c.token != ")") {
-            throw std::logic_error(c.token + " loop_for close parent oper " + std::to_string(current));
+            throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " loop_for close parent oper ");
         }
         c = gc();
         if (c.token == ")") {
@@ -187,7 +187,7 @@ void Parser::loop_for() {
 void Parser::loop() {
     while (true) {
         if (c.token != "(") {
-            throw std::logic_error(c.token + " loop open parent oper " + std::to_string(current));
+            throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " loop open parent oper ");
         }
         c = gc();
         if (c.token == "umri_kogda") {
@@ -195,19 +195,19 @@ void Parser::loop() {
         }
         oper();
         if (c.token != ")") {
-            throw std::logic_error(c.token + " loop close parent oper " + std::to_string(current));
+            throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " loop close parent oper ");
         }
         c = gc();
     }
 
     c = gc();
     if (c.token != "(") {
-        throw std::logic_error(c.token + " loop open parent cond_oper " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " loop open parent cond_oper ");
     }
 
     c = gc();
     if (!std::regex_match(c.token, std::regex("takzhe|libo|=|/=|>|<|>=|<="))) {
-        throw std::logic_error(c.token + " loop cond_oper condition " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " loop cond_oper condition ");
     }
 
     c = gc();
@@ -215,38 +215,38 @@ void Parser::loop() {
 
     c = gc();
     if (c.token != "(") {
-        throw std::logic_error(c.token + " loop open return paret " + std::to_string(current)); 
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " loop open return paret "); 
     }
 
     c = gc();
     if (c.token != "verni") {
-        throw std::logic_error(c.token + " loop retrun oper " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " loop retrun oper ");
     }
 
     ret_op();
     if (c.token != ")") { // end of return
-        throw std::logic_error(c.token + " loop close return parent " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " loop close return parent ");
     }
 
     c = gc(); // end of umri_kogda
     if (c.token != ")") {
-        throw std::logic_error(c.token + " loop close umri_kogda parent " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " loop close umri_kogda parent ");
     }
 
     c = gc(); // end of loop
     if (c.token != ")") {
-        throw std::logic_error(c.token + " loop close parent " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " loop close parent ");
     }
 }
 
 void Parser::if_op() {
     if (c.token != "(") {
-        throw std::logic_error(c.token + " if open parent " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " if open parent ");
     }
     
     c = gc();
     if (!std::regex_match(c.token, std::regex("takzhe|libo|=|/=|>|<|>=|<="))) {
-        throw std::logic_error(c.token + " if condition " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " if condition ");
     }
 
     c = gc();
@@ -255,18 +255,18 @@ void Parser::if_op() {
     // true opers
     c = gc();
     if (c.token != "(") {
-        throw std::logic_error(c.token + " if true condition open parent " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " if true condition open parent ");
     }
 
     c = gc();
     while (true) {
         if (c.token != "(") {
-            throw std::logic_error(c.token + " if true condition opers " + std::to_string(current));
+            throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " if true condition opers ");
         }
         c = gc();
         oper();
         if (c.token != ")") {
-            throw std::logic_error(c.token + " if true condition opers " + std::to_string(current));
+            throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " if true condition opers ");
         }
         c = gc();
         if (c.token == ")") {
@@ -277,18 +277,18 @@ void Parser::if_op() {
     // false opers
     c = gc();
     if (c.token != "(") {
-        throw std::logic_error(c.token + " if false condition open parent " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " if false condition open parent ");
     }
 
     c = gc();
     while (true) {
         if (c.token != "(") {
-            throw std::logic_error(c.token + " if false condition opers " + std::to_string(current));
+            throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " if false condition opers ");
         }
         c = gc();
         oper();
         if (c.token != ")") {
-            throw std::logic_error(c.token + " if false condition opers " + std::to_string(current));
+            throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " if false condition opers ");
         }
         c = gc();
         if (c.token == ")") {
@@ -298,7 +298,7 @@ void Parser::if_op() {
 
     c = gc();
     if (c.token != ")") {
-        throw std::logic_error(c.token + " if close parent " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " if close parent ");
     }
 }
 
@@ -308,7 +308,7 @@ void Parser::write() {
 
 void Parser::read() {
     if (c.level != 2) {
-        throw std::logic_error(c.token + " loop_for " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " loop_for ");
     }
     c = gc();
 }
@@ -354,47 +354,47 @@ void Parser::setf() {
         c = gc();
         arg();
     } else {
-        throw std::logic_error(c.token + " can't assign to non-var " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " can't assign to non-var ");
     }
 }
 
 void Parser::func() {
     if (c.level != 2) { // name
-        throw std::logic_error(c.token + " no function name " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " no function name ");
     }
 
     c = gc();
     if (c.token != "(") {
-        throw std::logic_error(c.token + " func open parent " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " func open parent ");
     }
 
     c = gc();
     while (c.token != ")") {
         if (c.level != 2) {
-            throw std::logic_error(c.token + " bad func argument " + std::to_string(current));
+            throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " bad func argument ");
         }
         c = gc();
     }
 
     if (c.token != ")") {
-        throw std::logic_error(c.token + " func arg close parent " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " func arg close parent ");
     }
 
     c = gc();
     if (c.token != "(") {
-        throw std::logic_error(c.token + " func open opers_group parent " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " func open opers_group parent ");
     }
     
     c = gc();
     while (true) {
         if (c.token != "(") {
-            throw std::logic_error(c.token + " func open opers parent " + std::to_string(current));
+            throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " func open opers parent ");
         }
         c = gc();
         oper();
         // c = gc();
         if (c.token != ")") {
-            throw std::logic_error(c.token + " func close opers parent " + std::to_string(current));
+            throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " func close opers parent ");
         }
         c = gc();
         if (c.token == ")") {
@@ -404,20 +404,20 @@ void Parser::func() {
 
     c = gc();
     if (c.token != "(") {
-        throw std::logic_error(c.token + " func return open parent " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " func return open parent ");
     }
     c = gc();
     if (c.token != "verni") {
-        throw std::logic_error(c.token + " no verni found " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " no verni found ");
     }
     ret_op();
     if (c.token != ")") {
-        throw std::logic_error(c.token + " func return close parent " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " func return close parent ");
     }
 
     c = gc();
     if (c.token != ")") {
-        throw std::logic_error(c.token + " func close parent " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " func close parent ");
     }
 }
 
@@ -454,13 +454,13 @@ void Parser::arg() {
         oper();
         //c = gc();
         if (c.token != ")") {
-            throw std::logic_error(c.token + " arg close oper parent" + std::to_string(current));
+            throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " arg close oper parent");
         }
         c = gc();
     } else if (c.token == ")") {
         return;
     } else {
-        throw std::logic_error(c.token + " bad argument " + std::to_string(current));
+        throw std::logic_error(std::to_string(num_of_line) + ". In lexem: " + c.token +  " bad argument ");
     }
     return;
 }
