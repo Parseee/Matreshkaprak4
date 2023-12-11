@@ -20,7 +20,7 @@
 <cond_oper> ::= <cond> ( " " <arg> )+
 <simple> ::= "+" | "-" | "*" | "/" | "max" | "min"
 <cond> ::= "takzhe" | "libo" | "=" | "/=" | ">" | "<" | ">=" | "<="
-<hard_oper> ::= <loop_for> | <loop> | <if> | <write> | <read> | <mod> | <not> | <incf> | <decf> | <return> | <fact> | <setf> | <car> | <cdr> | cons
+<hard_oper> ::= <loop_for> | <loop> | <if> | <write> | <read> | <mod> | <not> | <incf> | <decf> | <return> | <fact> | <setf> | <car> | <cdr> | <cons> | <func_call>
 <loop_for> ::= "idi_poka " <var> " ne_stanet " <arg> (<oper>)*
 <loop> ::= "zhivi " (<oper>)* "(umri_kogda (" <cond_oper> ") (" <return> "))"
 <if> ::= "esli " "(" <cond_oper> ")" "(" (<oper>)+ ")" "(" (<oper>)* ")"
@@ -37,5 +37,6 @@
 <cdr> ::= "telo " <arg> # changed from s_exp
 <cons> ::= "partia " <arg> (" " <arg>)+
 <setf> ::= "tovarisch " <var> " " <arg>
+<func_call> ::= <var> (<arg>)*
 
 # call func

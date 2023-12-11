@@ -5,4 +5,4 @@
 (tovarisch a 0)
 (partia a b)
 (idi_poka kk ne_stanet vv (napishi (+ (pribav kk 4) 228)) (mod 10 kk)) 
-(esli (< x y) ((! x) (napishi (+ x y))) ((napishi "loh"))) (zhivi (sprosi a) (umri_kogda (< 4 a) (verni "hdsbfdjshb"))) (func a ()()(golova a)) 
+(esli (< x y) ((! x) (napishi (+ x (foo 1 2 3 4)))) ((napishi "loh"))) (zhivi (sprosi a) (umri_kogda (< 4 a) (verni "hdsbfdjshb"))) (func a ()()(golova a)) 

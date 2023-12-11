@@ -130,13 +130,15 @@ void Parser::oper() {
         while (c.token != ")") {
             arg();
         }
-    }
-    else {
-        // all good
-        if (c.token != ")") {
+    } else {
+        if (c.token == ")") { // all good
+            return;
+        } else if (c.level == 2) { // func_call
+            c = gc();
+            func_call();
+        } else {
             throw std::logic_error(c.token + " bad oper " + std::to_string(current));
         }
-        return;
     }
 }
 
@@ -408,7 +410,12 @@ void Parser::cons() {
     arg();
 
     while (c.token != ")") {
-        // c = gc();
+        arg();
+    }
+}
+
+void Parser::func_call() {
+    while (c.token != ")") {
         arg();
     }
 }
