@@ -149,7 +149,6 @@ void Parser::simple_oper() {
     while (c.token != ")") {
         arg();
     }
-    return;
 }
 
 void Parser::cond_oper() {
@@ -157,7 +156,6 @@ void Parser::cond_oper() {
     while (c.token != ")") {
         arg();
     }
-    return;
 }
 
 void Parser::loop_for() {
@@ -315,6 +313,7 @@ void Parser::read() {
 }
 
 void Parser::mod() {
+    arg();
     arg();
 }
 
