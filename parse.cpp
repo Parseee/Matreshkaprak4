@@ -36,7 +36,7 @@ void Parser::parse() {
 // <s_exp> ::= "(" <oper> ") " | <s_exp> 
 void Parser::s_exp() {
     if (c.token != "(") {
-        throw std::logic_error(c.token + " s_exp" + std::to_string(current));
+        throw std::logic_error(c.token + " s_exp " + std::to_string(current));
     }
     c = gc();
     if (c.token == "func") {
@@ -45,7 +45,7 @@ void Parser::s_exp() {
     } else {
         oper();
         if (c.token != ")") {
-            throw std::logic_error(c.token + " s_exp" + std::to_string(current));
+            throw std::logic_error(c.token + " s_exp " + std::to_string(current));
         }
     }
     // for extending s_exp
@@ -126,10 +126,6 @@ void Parser::oper() {
     // cons -----------------------------------
     else if (c.token == "partia") {
         c = gc();
-        if (c.token != "(") {
-            throw std::logic_error(c.token + " partia " + std::to_string(current));
-        }
-        c = gc();
         arg();
         while (c.token != ")") {
             arg();
@@ -138,7 +134,7 @@ void Parser::oper() {
     else {
         // all good
         if (c.token != ")") {
-            throw std::logic_error(c.token + " eps oper " + std::to_string(current));
+            throw std::logic_error(c.token + " bad oper " + std::to_string(current));
         }
         return;
     }
@@ -160,7 +156,7 @@ void Parser::cond_oper() {
 
 void Parser::loop_for() {
     if (c.level != 2) {
-        throw std::logic_error(c.token + " loop_for " + std::to_string(current));
+        throw std::logic_error(c.token + " var loop_for " + std::to_string(current));
     }
     c = gc();
     if (c.token != "ne_stanet") {
@@ -172,12 +168,12 @@ void Parser::loop_for() {
     //c = gc();
     while (true) {
         if (c.token != "(") {
-            throw std::logic_error(c.token + " func " + std::to_string(current));
+            throw std::logic_error(c.token + " loop_for open parent oper " + std::to_string(current));
         }
         c = gc();
         oper();
         if (c.token != ")") {
-            throw std::logic_error(c.token + " func " + std::to_string(current));
+            throw std::logic_error(c.token + " loop_for close parent oper " + std::to_string(current));
         }
         c = gc();
         if (c.token == ")") {
@@ -189,7 +185,7 @@ void Parser::loop_for() {
 void Parser::loop() {
     while (true) {
         if (c.token != "(") {
-            throw std::logic_error(c.token + " func " + std::to_string(current));
+            throw std::logic_error(c.token + " loop open parent oper " + std::to_string(current));
         }
         c = gc();
         if (c.token == "umri_kogda") {
@@ -197,19 +193,19 @@ void Parser::loop() {
         }
         oper();
         if (c.token != ")") {
-            throw std::logic_error(c.token + " func " + std::to_string(current));
+            throw std::logic_error(c.token + " loop close parent oper " + std::to_string(current));
         }
         c = gc();
     }
 
     c = gc();
     if (c.token != "(") {
-        throw std::logic_error(c.token + " loop" + std::to_string(current));
+        throw std::logic_error(c.token + " loop open parent cond_oper " + std::to_string(current));
     }
 
     c = gc();
     if (!std::regex_match(c.token, std::regex("takzhe|libo|=|/=|>|<|>=|<="))) {
-        throw std::logic_error(c.token + " loop" + std::to_string(current));
+        throw std::logic_error(c.token + " loop cond_oper condition " + std::to_string(current));
     }
 
     c = gc();
@@ -217,38 +213,38 @@ void Parser::loop() {
 
     c = gc();
     if (c.token != "(") {
-        throw std::logic_error(c.token + " loop" + std::to_string(current)); 
+        throw std::logic_error(c.token + " loop open return paret " + std::to_string(current)); 
     }
 
     c = gc();
     if (c.token != "verni") {
-        throw std::logic_error(c.token + " loop" + std::to_string(current));
+        throw std::logic_error(c.token + " loop retrun oper " + std::to_string(current));
     }
 
     ret_op();
     if (c.token != ")") { // end of return
-        throw std::logic_error(c.token + " return loop" + std::to_string(current));
+        throw std::logic_error(c.token + " loop close return parent " + std::to_string(current));
     }
 
     c = gc(); // end of umri_kogda
     if (c.token != ")") {
-        throw std::logic_error(c.token + " umri_kogda loop" + std::to_string(current));
+        throw std::logic_error(c.token + " loop close umri_kogda parent " + std::to_string(current));
     }
 
     c = gc(); // end of loop
     if (c.token != ")") {
-        throw std::logic_error(c.token + " end loop " + std::to_string(current));
+        throw std::logic_error(c.token + " loop close parent " + std::to_string(current));
     }
 }
 
 void Parser::if_op() {
     if (c.token != "(") {
-        throw std::logic_error(c.token + " if" + std::to_string(current));
+        throw std::logic_error(c.token + " if open parent " + std::to_string(current));
     }
     
     c = gc();
     if (!std::regex_match(c.token, std::regex("takzhe|libo|=|/=|>|<|>=|<="))) {
-        throw std::logic_error(c.token + " if" + std::to_string(current));
+        throw std::logic_error(c.token + " if condition " + std::to_string(current));
     }
 
     c = gc();
@@ -257,18 +253,18 @@ void Parser::if_op() {
     // true opers
     c = gc();
     if (c.token != "(") {
-        throw std::logic_error(c.token + " if" + std::to_string(current));
+        throw std::logic_error(c.token + " if true condition open parent " + std::to_string(current));
     }
 
     c = gc();
     while (true) {
         if (c.token != "(") {
-            throw std::logic_error(c.token + " func " + std::to_string(current));
+            throw std::logic_error(c.token + " if true condition opers " + std::to_string(current));
         }
         c = gc();
         oper();
         if (c.token != ")") {
-            throw std::logic_error(c.token + " if " + std::to_string(current));
+            throw std::logic_error(c.token + " if true condition opers " + std::to_string(current));
         }
         c = gc();
         if (c.token == ")") {
@@ -276,21 +272,21 @@ void Parser::if_op() {
         }
     }
 
-    // else opers
+    // false opers
     c = gc();
     if (c.token != "(") {
-        throw std::logic_error(c.token + " if" + std::to_string(current));
+        throw std::logic_error(c.token + " if false condition open parent " + std::to_string(current));
     }
 
     c = gc();
     while (true) {
         if (c.token != "(") {
-            throw std::logic_error(c.token + " if " + std::to_string(current));
+            throw std::logic_error(c.token + " if false condition opers " + std::to_string(current));
         }
         c = gc();
         oper();
         if (c.token != ")") {
-            throw std::logic_error(c.token + " func " + std::to_string(current));
+            throw std::logic_error(c.token + " if false condition opers " + std::to_string(current));
         }
         c = gc();
         if (c.token == ")") {
@@ -300,7 +296,7 @@ void Parser::if_op() {
 
     c = gc();
     if (c.token != ")") {
-        throw std::logic_error(c.token + " if" + std::to_string(current));
+        throw std::logic_error(c.token + " if close parent " + std::to_string(current));
     }
 }
 
@@ -309,7 +305,10 @@ void Parser::write() {
 }
 
 void Parser::read() {
-    arg();
+    if (c.level != 2) {
+        throw std::logic_error(c.token + " loop_for " + std::to_string(current));
+    }
+    c = gc();
 }
 
 void Parser::mod() {
@@ -352,6 +351,8 @@ void Parser::setf() {
     if (c.level == 2) {
         c = gc();
         arg();
+    } else {
+        throw std::logic_error(c.token + " can't assign to non-var " + std::to_string(current));
     }
 }
 
@@ -362,31 +363,31 @@ void Parser::func() {
 
     c = gc();
     if (c.token != "(") {
-        throw std::logic_error(c.token + " bad func parenthesis " + std::to_string(current));
+        throw std::logic_error(c.token + " func open parent " + std::to_string(current));
     }
 
     c = gc();
     while (c.token != ")") {
-        if (c.level != 2 && c.level != 3) {
-            throw std::logic_error(c.token + " bad func arg arguments " + std::to_string(current));
+        if (c.level != 2) {
+            throw std::logic_error(c.token + " bad func argument " + std::to_string(current));
         }
         c = gc();
     }
 
     if (c.token != ")") {
-        throw std::logic_error(c.token + " bad func arg parenthesis " + std::to_string(current));
+        throw std::logic_error(c.token + " func arg close parent " + std::to_string(current));
     }
 
     c = gc();
     while (true) {
         if (c.token != "(") {
-            throw std::logic_error(c.token + " func " + std::to_string(current));
+            throw std::logic_error(c.token + " func open opers parent " + std::to_string(current));
         }
         c = gc();
         oper();
         // c = gc();
         if (c.token != ")") {
-            throw std::logic_error(c.token + " func " + std::to_string(current));
+            throw std::logic_error(c.token + " func close opers parent " + std::to_string(current));
         }
         c = gc();
         if (c.token == ")") {
@@ -421,14 +422,15 @@ void Parser::arg() {
     } else if (c.token == "(") {
         c = gc();
         oper();
-        c = gc();
+        //c = gc();
         if (c.token != ")") {
-            throw std::logic_error(c.token + " arg " + std::to_string(current));
+            throw std::logic_error(c.token + " arg close oper parent" + std::to_string(current));
         }
+        c = gc();
     } else if (c.token == ")") {
         return;
     } else {
-        throw std::logic_error(c.token + " arg " + std::to_string(current));
+        throw std::logic_error(c.token + " bad argument " + std::to_string(current));
     }
     return;
 }
