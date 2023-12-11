@@ -381,6 +381,11 @@ void Parser::func() {
     }
 
     c = gc();
+    if (c.token != "(") {
+        throw std::logic_error(c.token + " func open opers_group parent " + std::to_string(current));
+    }
+    
+    c = gc();
     while (true) {
         if (c.token != "(") {
             throw std::logic_error(c.token + " func open opers parent " + std::to_string(current));
@@ -395,6 +400,24 @@ void Parser::func() {
         if (c.token == ")") {
             break;
         }
+    }
+
+    c = gc();
+    if (c.token != "(") {
+        throw std::logic_error(c.token + " func return open parent " + std::to_string(current));
+    }
+    c = gc();
+    if (c.token != "verni") {
+        throw std::logic_error(c.token + " no verni found " + std::to_string(current));
+    }
+    ret_op();
+    if (c.token != ")") {
+        throw std::logic_error(c.token + " func return close parent " + std::to_string(current));
+    }
+
+    c = gc();
+    if (c.token != ")") {
+        throw std::logic_error(c.token + " func close parent " + std::to_string(current));
     }
 }
 

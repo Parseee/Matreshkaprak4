@@ -24,7 +24,7 @@
 <loop_for> ::= "idi_poka " <var> " ne_stanet " <arg> (<oper>)*
 <loop> ::= "zhivi " (<oper>)* "(umri_kogda (" <cond_oper> ") (" <return> "))"
 <if> ::= "esli " "(" <cond_oper> ")" "(" (<oper>)+ ")" "(" (<oper>)* ")"
-<func> ::= "func " <name> " (" (<var>)* ") " (<oper>)* " (" <return> ")"
+<func> ::= "func " <name> " (" (<var>)* ") (" (<oper>)* ") (" <return> ")"
 <write> ::= "napishi " <arg>
 <read> ::= "sprosi " <var>
 <mod> ::= "mod " <arg> " " <arg>
