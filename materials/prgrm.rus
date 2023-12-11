@@ -1,1 +1,2 @@
-(golova x ) (golova x ) (golova x ) (golova x ) 
+(idi_poka kk ne_stanet vv (napishi (+ 3 228)) (mod 10 kk)) 
+(esli (< x y) ((! x) (napishi (+ x y))) ((napishi "loh"))) (zhivi (< a 4) (umri_kogda (< 4 a) (verni "hdsbfdjshb"))) (func a ()()(golova a)) 
