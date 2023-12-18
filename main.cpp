@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string>
 
-int main(int argc, char * argv[]) {
+int main() {
     setlocale(LC_ALL, "en-US.UTF-8");
     std::vector < Token > lexes;
     try {
@@ -16,14 +16,16 @@ int main(int argc, char * argv[]) {
             std::cerr << "exception " << e[i].what() << "\n\n";
     }
     for (int i = 0; i < lexes.size(); ++i) {
-        std::cout << lexes[i].token << " " << lexes[i].level << std::endl;
+        std::cout << i + 1 << ":  " << lexes[i].token << " " << lexes[i].level << std::endl;
     }
     try {
         Parser parser(lexes);
         parser.parse();
     } catch (std::logic_error e) {
-        std::cout << e.what() << std::endl;
+        std::cerr << "Exception " << e.what() << std::endl;
+        return 0;
     }
+    std::cout << "Syntax analysis complete sucsessfully\n";
 }
 
 /*

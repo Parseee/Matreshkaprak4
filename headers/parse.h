@@ -37,6 +37,7 @@ private:
     void car();
     void cdr();
     void cons();
+    void func_call();
 
     Token gc();
     //Token previous();
