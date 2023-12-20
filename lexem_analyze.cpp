@@ -1,23 +1,27 @@
 #include "headers/lexem_analyze.h"
 
-avl * lex_type;
+avl *lex_type;
 
-std::vector < std::invalid_argument > errors;
-std::vector < Token > lexemes;
+std::vector<std::invalid_argument> errors;
+std::vector<Token> lexemes;
 
-int numOfLine() {
+int numOfLine()
+{
     int n = 1;
-    for (int ex = 0; ex < lexemes.size(); ++ex) {
+    for (int ex = 0; ex < lexemes.size(); ++ex)
+    {
         if (lexemes[ex].level == 0)
             ++n;
     }
     return n;
 }
 
-void findError(std::string cur) {
+void findError(std::string cur)
+{
     std::smatch match;
     int num_of_line = numOfLine();
-    if (regex_search(cur, match, std::regex("[$@%?№]"))) {
+    if (regex_search(cur, match, std::regex("[$@%?№]")))
+    {
         errors.push_back(std::invalid_argument(
             "in line: " + std::to_string(num_of_line) +
             "\nInvalid character in the variable name: " + match[0].str()));
@@ -25,7 +29,7 @@ void findError(std::string cur) {
     return;
 }
 
-std::vector < Token > lexem_array;
+std::vector<Token> lexem_array;
 /* {
     {"\n", 0},    {"pribav", 1},     {"golova", 1},   {"telo", 1},
     {"zhivi", 1}, {"umri_kogda", 1}, {"idi_poka", 1}, {"ne_stanet", 1},
@@ -38,60 +42,95 @@ std::vector < Token > lexem_array;
     {")", 5}
 }; */
 
-std::vector < Token > lex_an(const std::string text) {
+std::vector<Token> lex_an(const std::string text)
+{
     lexem_array = initialize_lexem_array("materials/lexic.txt");
-    for (int i = 0; i < lexem_array.size(); ++i) {
-        lex_type -> insert(lex_type, {lexem_array[i].token, lexem_array[i].level});
+    for (int i = 0; i < lexem_array.size(); ++i)
+    {
+        lex_type->insert(lex_type, {lexem_array[i].token, lexem_array[i].level});
     }
 
     std::string cur = "";
-    for (int i = 0; i < text.size(); ++i) {
-        if(text[i] == '\"'){
+    for (int i = 0; i < text.size(); ++i)
+    {
+        if (text[i] == '\"')
+        {
             cur += text[i++];
-            while(text[i] != '\"' && i < text.size()){
+            while (text[i] != '\"' && i < text.size())
+            {
                 cur += text[i++];
             }
-            if(i < text.size()){
+            if (i < text.size())
+            {
                 cur += text[i++];
-            } else {
+            }
+            else
+            {
                 int num_of_line = numOfLine();
-                        errors.push_back(std::invalid_argument(
-                            "In line: " + std::to_string(num_of_line) +
-                            "\nInvalid character: \""));
+                errors.push_back(std::invalid_argument(
+                    "In line: " + std::to_string(num_of_line) +
+                    "\nInvalid character: \""));
             }
             Token lex;
             lex.token = cur;
             lex.level = 3;
             lexemes.push_back(lex);
-            if (text[i] == ')' || text[i] == '(') {
+            if (text[i] == ')' || text[i] == '(')
+            {
                 Token lex;
                 std::string s = "";
                 s += text[i];
                 lex.token = s;
-                lex.level = lex_type -> find(lex_type, s);
+                lex.level = lex_type->find(lex_type, s);
                 lexemes.push_back(lex);
             }
             cur = "";
-        } 
-        else if (text[i] == ' ' || text[i] == ')' || text[i] == '(') {
-            if (cur.size() != 0) {
+        }
+        else if (text[i] == ' ' || text[i] == ')' || text[i] == '(')
+        {
+            if (cur.size() != 0)
+            {
 
                 Token lex;
                 lex.token = ((cur == "\n") ? "\\n" : cur);
 
-                if (lex_type -> find(lex_type, cur) != -1) {
-                    lex.level = lex_type -> find(lex_type, cur);
-                } else {
-                    if ((cur[0] == '\'' || cur[cur.size() - 1] == '\'') && cur[0] != cur[cur.size() - 1]) {
+                if (lex_type->find(lex_type, cur) != -1)
+                {
+                    lex.level = lex_type->find(lex_type, cur);
+                }
+                else
+                {
+                    if ((cur[0] == '\'' || cur[cur.size() - 1] == '\'') && cur[0] != cur[cur.size() - 1])
+                    {
                         int num_of_line = numOfLine();
                         errors.push_back(std::invalid_argument(
                             "In line: " + std::to_string(num_of_line) +
                             "\nInvalid character: \'"));
                     }
                     if (cur[0] == '\"' || cur[0] == '\'' || isdigit(cur[0]) || cur[0] == '-' ||
-                        cur[0] == '+') {
+                        cur[0] == '+')
+                    {
+                        if (cur[0] == '\'' || cur[cur.size() - 1] == '\'')
+                        {
+                            if (cur.size() != 3)
+                            {
+                                int num_of_line = numOfLine();
+                                errors.push_back(std::invalid_argument(
+                                    "In line: " + std::to_string(num_of_line) +
+                                    "\nThe char must have one character. "));
+                            }
+                        }
+                        else
+                        {
+                            int num_of_line = numOfLine();
+                            errors.push_back(std::invalid_argument(
+                                "In line: " + std::to_string(num_of_line) +
+                                "\nInvalid character: \'"));
+                        }
                         lex.level = 3;
-                    } else {
+                    }
+                    else
+                    {
                         findError(cur);
                         lex.level = 2;
                     }
@@ -100,36 +139,47 @@ std::vector < Token > lex_an(const std::string text) {
                 lexemes.push_back(lex);
             }
 
-            if (text[i] == ')' || text[i] == '(') {
+            if (text[i] == ')' || text[i] == '(')
+            {
                 Token lex;
                 std::string s = "";
                 s += text[i];
                 lex.token = s;
-                lex.level = lex_type -> find(lex_type, s);
+                lex.level = lex_type->find(lex_type, s);
                 lexemes.push_back(lex);
             }
 
             cur = "";
-        } else {
+        }
+        else
+        {
             cur += text[i];
         }
     }
-    if (cur.size() != 0) {
+    if (cur.size() != 0)
+    {
         Token lex;
         lex.token = ((cur == "\n") ? "\\n" : cur);
 
-        if (lex_type -> find(lex_type, cur) != -1) {
-            lex.level = lex_type -> find(lex_type, cur);
-        } else {
-            if ((cur[0] == '\"' || cur[cur.size() - 1] == '\"') && cur.size() > 1 && cur[0] != cur[cur.size() - 1]) {
+        if (lex_type->find(lex_type, cur) != -1)
+        {
+            lex.level = lex_type->find(lex_type, cur);
+        }
+        else
+        {
+            if ((cur[0] == '\"' || cur[cur.size() - 1] == '\"') && cur.size() > 1 && cur[0] != cur[cur.size() - 1])
+            {
                 int num_of_line = numOfLine();
                 errors.push_back(std::invalid_argument(
                     "in line: " + std::to_string(num_of_line) +
                     "\nInvalid character: \""));
             }
-            if (cur[0] == '\"' || isdigit(cur[0]) || cur[0] == '-' || cur[0] == '+') {
+            if (cur[0] == '\"' || isdigit(cur[0]) || cur[0] == '-' || cur[0] == '+')
+            {
                 lex.level = 3;
-            } else {
+            }
+            else
+            {
                 lex.level = 2;
             }
         }
