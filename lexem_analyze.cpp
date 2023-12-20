@@ -30,17 +30,6 @@ void findError(std::string cur)
 }
 
 std::vector<Token> lexem_array;
-/* {
-    {"\n", 0},    {"pribav", 1},     {"golova", 1},   {"telo", 1},
-    {"zhivi", 1}, {"umri_kogda", 1}, {"idi_poka", 1}, {"ne_stanet", 1},
-    {"pishi", 1}, {"sprosi", 1},     {"func", 1},     {"esli", 1},
-    {"+", 4},     {"-", 4},          {"*", 4},        {"/", 4},
-    {"!", 4},     {"ubav", 4},       {"verni", 4},    {"max", 4},
-    {"min", 4},   {"mod", 4},        {"and", 4},      {"or", 4},
-    {"not", 4},   {"=", 4},          {"/=", 4},       {">", 4},
-    {"<", 4},     {">=", 4},         {"<=", 4},       {"(", 5},
-    {")", 5}
-}; */
 
 std::vector<Token> lex_an(const std::string text)
 {
@@ -100,17 +89,17 @@ std::vector<Token> lex_an(const std::string text)
                 }
                 else
                 {
-                    if ((cur[0] == '\'' || cur[cur.size() - 1] == '\'') && cur[0] != cur[cur.size() - 1])
+                    if ((cur[0] == '\'' || cur[cur.size() - 1] == '\'' || cur[0] == '\"' || cur[cur.size() - 1] == '\"') && cur[0] != cur[cur.size() - 1])
                     {
                         int num_of_line = numOfLine();
                         errors.push_back(std::invalid_argument(
                             "In line: " + std::to_string(num_of_line) +
-                            "\nInvalid character: \'"));
+                            "\nInvalid character: \'/\""));
                     }
                     if (cur[0] == '\"' || cur[0] == '\'' || isdigit(cur[0]) || cur[0] == '-' ||
                         cur[0] == '+')
                     {
-                        if (cur[0] == '\'' || cur[cur.size() - 1] == '\'')
+                        if (cur[0] == '\'' && cur[cur.size() - 1] == '\'')
                         {
                             if (cur.size() != 3)
                             {
@@ -119,13 +108,6 @@ std::vector<Token> lex_an(const std::string text)
                                     "In line: " + std::to_string(num_of_line) +
                                     "\nThe char must have one character. "));
                             }
-                        }
-                        else
-                        {
-                            int num_of_line = numOfLine();
-                            errors.push_back(std::invalid_argument(
-                                "In line: " + std::to_string(num_of_line) +
-                                "\nInvalid character: \'"));
                         }
                         lex.level = 3;
                     }

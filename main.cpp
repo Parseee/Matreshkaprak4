@@ -10,7 +10,7 @@ int main() {
     setlocale(LC_ALL, "en-US.UTF-8");
     std::vector < Token > lexes;
     try {
-        lexes = lex_an(read_file("materials/prgrm.rus"));
+        lexes = lex_an(read_file("../materials/prgrm.rus"));
     } catch (std::vector < std::invalid_argument > e) {
         for (int i = 0; i < e.size(); i++)
             std::cerr << "exception " << e[i].what() << "\n\n";

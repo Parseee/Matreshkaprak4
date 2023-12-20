@@ -38,6 +38,7 @@ private:
     void cdr();
     void cons();
     void func_call();
+    void arg_sem();
 
     Token gc();
     //Token previous();

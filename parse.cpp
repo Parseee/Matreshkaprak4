@@ -10,6 +10,7 @@ Token c;
 size_t num_of_line = 1;
 
 TID_tree *tid_tree = new TID_tree, *cur_tid = tid_tree;
+std::vector<std::string> stack;
 
 Parser::Parser(std::vector<Token> tokens) : tokens(tokens), current(0) {}
 
@@ -46,7 +47,7 @@ void Parser::parse()
 void Parser::s_exp()
 {
 
-    tid_tree->create_TID();
+    // tid_tree->create_TID();
 
     if (c.token != "(")
     {
@@ -80,22 +81,12 @@ void Parser::oper()
     // simple_oper ----------------------------
     if (std::regex_match(c.token, std::regex("[+]|-|[*]|/|max|min")))
     {
-        stack.push_back(c.token);
-
-        c = gc();
         simple_oper();
-
-        stack.clear();
     }
     // cond_oper ------------------------------
     else if (std::regex_match(c.token, std::regex("takzhe|libo|=|>|<|>=|<=|golova|telo")))
     {
-        stack.push_back(c.token);
-
-        c = gc();
         cond_oper();
-
-        stack.clear();
     }
     // hard_oper ------------------------------
     // loop_for ---------------
@@ -194,10 +185,56 @@ void Parser::oper()
 
 void Parser::simple_oper()
 {
-    arg();
+
+    stack.push_back(c.token);
+
+    c = gc();
+
+    arg_sem();
     while (c.token != ")")
     {
-        arg();
+        arg_sem();
+    }
+
+    std::string t = stack[stack.size() - 1];
+    stack.pop_back();
+
+    int i = stack.size() - 1;
+    for (; isType(stack[i]); --i)
+    {
+        if (stack[i] != t)
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". It is not possible to perform an operation with different types: " + t + " " + stack[i]);
+        stack.pop_back();
+    }
+    if (stack[i] == "max" || stack[i] == "min")
+    {
+        if (t == "int" || t == "double")
+        {
+            stack[i] = t;
+            return;
+        }
+        else
+        {
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Min/max operations accept arguments of type int/double, not found: " + t);
+        }
+    }
+    else
+    {
+        stack[i] = t;
+    }
+}
+
+void Parser::cond_oper()
+{
+
+    stack.push_back(c.token);
+
+    c = gc();
+
+    arg_sem();
+    while (c.token != ")")
+    {
+        arg_sem();
     }
 
     int i = stack.size() - 1;
@@ -230,35 +267,7 @@ void Parser::simple_oper()
             throw std::logic_error("in line: " + std::to_string(num_of_line) + ". It is not possible to perform an operation with different types: " + t + " " + stack[i]);
         stack.pop_back();
     }
-    if (stack[i] == "max" || stack[i] == "min")
-    {
-        if (t == "int" || t == "double")
-        {
-            stack[i] = t;
-            return;
-        }
-        else
-        {
-            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Min/max operations accept arguments of type int/double, not found: " + t);
-        }
-    }
-    if (std::regex_match(t, std::regex("[+]|-|[*]|/")))
-    {
-        stack[i] = t;
-    }
-    else
-    {
-        stack[i] = "bool";
-    }
-}
-
-void Parser::cond_oper()
-{
-    arg();
-    while (c.token != ")")
-    {
-        arg();
-    }
+    stack[i] = "bool";
 }
 
 void Parser::loop_for()
@@ -638,6 +647,39 @@ void Parser::arg()
     // literal or var name
     if (c.level == 2 || c.level == 3)
     {
+        c = gc();
+        // all good
+    }
+    else if (c.token == "(")
+    {
+        c = gc();
+        oper();
+        // c = gc();
+        if (c.token != ")")
+        {
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of"
+                                                                                                      " arg close oper parent");
+        }
+        c = gc();
+    }
+    else if (c.token == ")")
+    {
+        return;
+    }
+    else
+    {
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of"
+                                                                                                  " bad argument ");
+    }
+    return;
+}
+
+void Parser::arg_sem()
+{
+    // literal or var name
+    if (c.level == 2 || c.level == 3)
+    {
+
         std::string type;
         if (c.level == 2)
         {
