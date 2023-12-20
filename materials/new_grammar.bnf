@@ -36,7 +36,5 @@
 <incf> ::= "pribav " <argf> ( " " <argf>)?
 <decf> ::= "ubav " <argf> ( " " <argf>)?
 <return> ::= "verni " <arg>
-<car> ::= "golova " <s_exp>
-<cdr> ::= "telo " <s_exp>
 <setf> ::= "tovarisch " <var> " " <arg>
 <empty> ::= " "

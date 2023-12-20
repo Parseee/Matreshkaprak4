@@ -76,7 +76,7 @@ void Parser::s_exp()
     }
 }
 
-// <oper> ::= <easy_oper> | <hard_oper> | <func> | <car> | <cdr> | <empty>
+// <oper> ::= <easy_oper> | <hard_oper> | <func> | <empty>
 void Parser::oper()
 {
     // simple_oper ----------------------------
@@ -85,7 +85,7 @@ void Parser::oper()
         simple_oper();
     }
     // cond_oper ------------------------------
-    else if (std::regex_match(c.token, std::regex("takzhe|libo|=|>|<|>=|<=|golova|telo")))
+    else if (std::regex_match(c.token, std::regex("takzhe|libo|=|>|<|>=|<=")))
     {
         cond_oper();
     }
@@ -155,16 +155,6 @@ void Parser::oper()
     {
         c = gc();
         setf();
-    }
-    // cons -----------------------------------
-    else if (c.token == "partia")
-    {
-        c = gc();
-        arg();
-        while (c.token != ")")
-        {
-            arg();
-        }
     }
     else
     {
@@ -237,31 +227,9 @@ void Parser::cond_oper()
         arg();
     }
 
-    int i = stack.size() - 1;
-    std::string t1 = "NIL", t2 = "NIL";
-    auto tmp_stack = stack;
-    for (; isType(stack[i]); --i)
-    {
-        t2 = t1;
-        t1 = stack[i];
-        tmp_stack.pop_back();
-    }
-    if (stack[i] == "golova")
-    {
-        stack = tmp_stack;
-        stack[i] = t1;
-        return;
-    }
-    else if (stack[i] == "telo")
-    {
-        stack = tmp_stack;
-        stack[i] = t2;
-        return;
-    }
-
     std::string t = stack[stack.size() - 1];
     stack.pop_back();
-    i = stack.size() - 1;
+    int i = stack.size() - 1;
     for (; isType(stack[i]); --i)
     {
         if (stack[i] != t)
@@ -273,10 +241,7 @@ void Parser::cond_oper()
 
 void Parser::loop_for()
 {
-    if (c.level != 2)
-    {
-        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " var loop_for ");
-    }
+    arg();
     c = gc();
     if (c.token != "ne_stanet")
     {
@@ -284,6 +249,12 @@ void Parser::loop_for()
     }
     c = gc();
     arg();
+
+    if (!(stack[stack.size() - 1] == stack[stack.size() - 2] && (stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double")))
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". In the loop condition, the variables must be of type int/double, found: " + stack[stack.size() - 1] + " and " + stack[stack.size() - 2]);
+
+    stack.pop_back();
+    stack.pop_back();
 
     // c = gc();
     while (true)
@@ -342,6 +313,8 @@ void Parser::loop()
     c = gc();
     cond_oper();
 
+    stack.pop_back();
+
     c = gc();
     if (c.token != "(")
     {
@@ -382,6 +355,8 @@ void Parser::if_op()
 
     c = gc();
     cond_oper();
+
+    stack.pop_back();
 
     // true opers
     c = gc();
@@ -462,6 +437,11 @@ void Parser::mod()
 {
     arg();
     arg();
+
+    if (!(stack[stack.size() - 1] == stack[stack.size() - 2] && stack[stack.size() - 1] == "int"))
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The mod operation takes values of the int type, found " + stack[stack.size() - 1] + " and " + stack[stack.size() - 2]);
+    stack.pop_back();
+    stack.pop_back();
 }
 
 void Parser::ne()
@@ -475,7 +455,17 @@ void Parser::incf()
     if (c.token != ")")
     {
         arg();
+
+        if (!(stack[stack.size() - 1] == stack[stack.size() - 2] && (stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double")))
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The increment operation takes int/double values, found: " + stack[stack.size() - 1] + " and " + stack[stack.size() - 2]);
+
+        stack.pop_back();
+        stack.pop_back();
     }
+    if (!(stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double"))
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The increment operation takes int/double values, found: " + stack[stack.size() - 1]);
+
+    stack.pop_back();
 }
 
 void Parser::decf()
@@ -484,7 +474,17 @@ void Parser::decf()
     if (c.token != ")")
     {
         arg();
+
+        if (!(stack[stack.size() - 1] == stack[stack.size() - 2] && (stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double")))
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The decrement operation takes int/double values, found: " + stack[stack.size() - 1] + " and " + stack[stack.size() - 2]);
+
+        stack.pop_back();
+        stack.pop_back();
     }
+    if (!(stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double"))
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The decrement operation takes int/double values, found: " + stack[stack.size() - 1]);
+
+    stack.pop_back();
 }
 
 void Parser::ret_op()
@@ -496,11 +496,10 @@ void Parser::ret_op()
 void Parser::fact()
 {
     arg();
-    while (c.token != ")")
-    {
-        c = gc();
-        arg();
-    }
+
+    if (!(stack[stack.size() - 1] == "int"))
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The factorial operation take value of the int type, found " + stack[stack.size() - 1]);
+    stack.pop_back();
 }
 
 void Parser::setf()
@@ -627,26 +626,6 @@ void Parser::func()
     }
 
     func_tid->push_name(name, type, params_name);
-}
-
-void Parser::car()
-{
-    arg();
-}
-
-void Parser::cdr()
-{
-    arg();
-}
-
-void Parser::cons()
-{
-    arg();
-
-    while (c.token != ")")
-    {
-        arg();
-    }
 }
 
 void Parser::func_call()
