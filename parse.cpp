@@ -428,7 +428,7 @@ void Parser::read()
 {
     if (c.level != 2)
     {
-        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " loop_for ");
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The read operation takes variable, but found litteral ");
     }
     c = gc();
 }
@@ -499,7 +499,6 @@ void Parser::fact()
 
     if (!(stack[stack.size() - 1] == "int"))
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The factorial operation take value of the int type, found " + stack[stack.size() - 1]);
-    stack.pop_back();
 }
 
 void Parser::setf()

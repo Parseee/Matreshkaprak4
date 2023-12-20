@@ -29,7 +29,7 @@
 <params> ::= <var> <params_extr> | <empty>
 <params_extr> ::= " " <var> <params_extr> | <empty>
 <write> ::= "napishi " <arg>
-<read> ::= "sprosi " <arg>
+<read> ::= "sprosi " <var>
 <mod> ::= "mod " <argf> " " <argf>
 <not> ::= "ne " <arg>
 <fact> ::= "! " <argf>
