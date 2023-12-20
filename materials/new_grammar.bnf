@@ -21,9 +21,9 @@
 <cond_oper> ::= <cond> ( " " <argf> )+
 <simple> ::= "+" | "-" | "*" | "/" | "max" | "min"
 <cond> ::= "takzhe" | "libo" | "=" | "/=" | ">" | "<" | ">=" | "<="
-<hard_oper> ::= <loop_for> | <loop> | <if> | <write> | <read> | <mod> | <not> | <incf> | <decf> | <return> | <fact> | <setf>
+<hard_oper> ::= <loop_for> | <loop> | <if> | <write> | <read> | <mod> | <not> | <incf> | <decf> | <fact> | <setf>
 <loop_for> ::= "idi_poka " <var> " ne_stanet " <num> <s_exp>
-<loop> ::= "zhivi " <s_exp> "(umri_kogda (" <cond_oper> ") (" <return> "))"
+<loop> ::= "zhivi " <s_exp> "(umri_kogda (" <cond_oper> "))"
 <if> ::= "esli (" <cond_oper> ") (" <oper> ") " <s_exp>
 <func> ::= "func " <name> " (" <params> ") " <s_exp> " (" <return> ")"
 <params> ::= <var> <params_extr> | <empty>

@@ -48,6 +48,88 @@ bool isType(std::string s)
     return false;
 }
 
+// TID funcs
+
+void TID::push_name(std::string s, std::string t)
+{
+    for (int i = 0; i < name_.size(); ++i)
+    {
+        if (s == name_[i])
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The name " + s + " has already been used. ");
+    }
+    name_.push_back(s);
+    type_.push_back(t);
+}
+
+std::string TID::check_name(std::string s)
+{
+    for (int i = 0; i < name_.size(); ++i)
+    {
+        if (s == name_[i])
+            return type_[i];
+    }
+    return "-_-";
+}
+
+void TID::replace(std::string s, std::string t)
+{
+    for (int i = 0; i < name_.size(); ++i)
+    {
+        if (s == name_[i])
+        {
+            type_[i] = t;
+            return;
+        }
+    }
+}
+
+// func_TID funcs
+
+void func_TID::push_name(std::string s, std::string t, std::vector<std::string> p_name)
+{
+    int i = 0;
+    for (; i < name_.size(); ++i)
+    {
+        if (s == name_[i])
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The name " + s + " has already been used. ");
+    }
+    if (cur_tid->find(s))
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The name " + s + " has already been used. ");
+
+    name_.push_back(s);
+    type_.push_back(t);
+    for (int j = 0; j < p_name.size(); ++j)
+    {
+        tid_[i].push_name(p_name[j], "NIL");
+    }
+}
+std::string func_TID::check_name(std::string s, std::vector<std::string> p_type)
+{
+    for (int i = 0; i < name_.size(); ++i)
+    {
+        if (s == name_[i])
+        {
+            for (int j = 0; j < p_type.size(); ++j)
+            {
+                tid_[i].type_[j] = p_type[j];
+            }
+            return type_[i];
+        }
+    }
+    throw std::logic_error("in line: " + std::to_string(num_of_line) + ". No function named " + s);
+    return "-_-";
+}
+
+bool func_TID::find(std::string s)
+{
+    for (int i = 0; i < name_.size(); ++i)
+    {
+        if (s == name_[i])
+            return true;
+    }
+    return false;
+}
+
 // TID_tree funcs
 
 void TID_tree::create_TID()
@@ -88,7 +170,12 @@ std::string TID_tree::check_name(std::string s)
 bool TID_tree::find(std::string s)
 {
     if (this == nullptr)
-        return false;
+    {
+        if (func_tid->find(s))
+            return true;
+        else
+            return false;
+    }
     if (this->tid.check_name(s) == "-_-")
     {
         return this->prev->find(s);
@@ -108,40 +195,5 @@ void TID_tree::replace(std::string s, std::string t)
     else
     {
         this->tid.replace(s, t);
-    }
-}
-
-// TID funcs
-
-void TID_tree::TID::push_name(std::string s, std::string t)
-{
-    for (int i = 0; i < name_.size(); ++i)
-    {
-        if (s == name_[i])
-            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The name " + s + " has already use. ");
-    }
-    name_.push_back(s);
-    type_.push_back(t);
-}
-
-std::string TID_tree::TID::check_name(std::string s)
-{
-    for (int i = 0; i < name_.size(); ++i)
-    {
-        if (s == name_[i])
-            return type_[i];
-    }
-    return "-_-";
-}
-
-void TID_tree::TID::replace(std::string s, std::string t)
-{
-    for (int i = 0; i < name_.size(); ++i)
-    {
-        if (s == name_[i])
-        {
-            type_[i] = t;
-            return;
-        }
     }
 }
