@@ -299,6 +299,7 @@ void Parser::loop()
             break;
         }
         oper();
+
         if (c.token != ")")
         {
             throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " loop close parent oper ");
@@ -324,18 +325,7 @@ void Parser::loop()
     stack.pop_back();
 
     c = gc();
-    if (c.token != "(")
-    {
-        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " loop open return paret ");
-    }
-
-    c = gc();
-    if (c.token != "verni")
-    {
-        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " loop retrun oper ");
-    }
-
-    c = gc(); // end of umri_kogda
+    // end of umri_kogda
     if (c.token != ")")
     {
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " loop close umri_kogda parent ");
@@ -430,6 +420,7 @@ void Parser::if_op()
 void Parser::write()
 {
     arg();
+    stack.pop_back();
 }
 
 void Parser::read()
@@ -439,6 +430,7 @@ void Parser::read()
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The read operation takes variable, but found litteral ");
     }
     c = gc();
+    stack.pop_back();
 }
 
 void Parser::mod()
@@ -455,6 +447,8 @@ void Parser::mod()
 void Parser::ne()
 {
     arg();
+    stack.pop_back();
+    stack.push_back("bool");
 }
 
 void Parser::incf()
@@ -469,6 +463,7 @@ void Parser::incf()
 
         stack.pop_back();
         stack.pop_back();
+        return;
     }
     if (!(stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double"))
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The increment operation takes int/double values, found: " + stack[stack.size() - 1]);
@@ -488,6 +483,7 @@ void Parser::decf()
 
         stack.pop_back();
         stack.pop_back();
+        return;
     }
     if (!(stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double"))
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The decrement operation takes int/double values, found: " + stack[stack.size() - 1]);
