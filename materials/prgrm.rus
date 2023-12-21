@@ -1,3 +1,5 @@
 (tovarisch x 10)
 (tovarisch y 20)
-(napishi (+ 2 (- y x) 8))
+(func foo(a b)((tovarisch z (+ a w)))(verni z))
+(tovarisch w 30)
+(napishi (+ 2 (foo y x) 8))

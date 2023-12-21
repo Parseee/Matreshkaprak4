@@ -7,7 +7,7 @@
 #include <regex>
 
 Token c;
-size_t num_of_line = 1;
+extern size_t num_of_line;
 
 TID_tree *tid_tree = new TID_tree, *cur_tid = tid_tree;
 func_TID *func_tid = new func_TID;
@@ -20,10 +20,8 @@ Token Parser::gc()
     if (!is_at_end())
     {
         if (tokens[current].token == "\\n")
-        {
             ++current;
-            ++num_of_line;
-        }
+        num_of_line = getNumLine(current);
         return tokens[current++];
     }
     else
@@ -31,6 +29,16 @@ Token Parser::gc()
         // maybe add another info
         throw std::logic_error("Unexpected end gc");
     }
+}
+int Parser::getNumLine(int cu)
+{
+    int k = 1;
+    for (int i = 0; i < cu; ++i)
+    {
+        if (tokens[i].token == "\\n")
+            ++k;
+    }
+    return k;
 }
 
 bool Parser::is_at_end()
@@ -513,9 +521,11 @@ void Parser::setf()
 
         arg();
 
-        if (tid_tree->find(name))
+        if (cur_tid->find(name))
         {
-            tid_tree->replace(name, type);
+            if (func_tid->find(name))
+                throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Cant assign anything to function");
+            cur_tid->replace(name, type);
         }
         else
         {
@@ -529,46 +539,28 @@ void Parser::setf()
     stack.pop_back();
 }
 
-void Parser::func()
+void Parser::check_func(std::string name, std::vector<std::string> param_type)
 {
-    if (c.level != 2)
-    { // name
-        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " no function name ");
-    }
-    std::string name = c.token, type;
-    std::vector<std::string> params_name;
+    int last_cur = current;
+
+    func_tid->set_params_type(name, param_type);
+
+    std::string type = "NIL";
+    int i = func_tid->get_idx(name);
+
+    cur_tid->create_TID(func_tid->get_tid_params(i));
+
+    current = func_tid->get_num_of_lex(i);
 
     c = gc();
-    if (c.token != "(")
-    {
-        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " func open parent ");
-    }
 
-    c = gc();
-    while (c.token != ")")
-    {
-        if (c.level != 2)
-        {
-            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " bad func argument ");
-        }
-
-        params_name.push_back(c.token);
-
-        c = gc();
-    }
-
-    if (c.token != ")")
-    {
-        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " func arg close parent ");
-    }
-
-    c = gc();
     if (c.token != "(")
     {
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " func open opers_group parent ");
     }
 
     c = gc();
+
     while (true)
     {
         if (c.token != "(")
@@ -618,13 +610,69 @@ void Parser::func()
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " func return close parent ");
     }
 
+    cur_tid->del_TID();
+    current = last_cur;
+}
+void Parser::func()
+{
+    if (c.level != 2)
+    { // name
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " no function name ");
+    }
+    std::string name = c.token;
+    std::vector<std::string> params_name;
+
     c = gc();
+    if (c.token != "(")
+    {
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " func open parent ");
+    }
+
+    c = gc();
+    while (c.token != ")")
+    {
+        if (c.level != 2)
+        {
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " bad func argument ");
+        }
+
+        params_name.push_back(c.token);
+
+        c = gc();
+    }
+
+    if (c.token != ")")
+    {
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " func arg close parent ");
+    }
+
+    func_tid->push_name(name, current, params_name);
+
+    c = gc();
+    c = gc();
+
+    for (int i = 1; i > 0; c = gc())
+    {
+        if (c.token == "(")
+            ++i;
+        if (c.token == ")")
+            --i;
+    }
+
+    c = gc();
+    c = gc();
+
+    for (int i = 1; i > 0; c = gc())
+    {
+        if (c.token == "(")
+            ++i;
+        if (c.token == ")")
+            --i;
+    }
     if (c.token != ")")
     {
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " func close parent ");
     }
-
-    func_tid->push_name(name, type, params_name);
 }
 
 void Parser::func_call()
@@ -651,7 +699,7 @@ void Parser::func_call()
     }
     stack = cur_stack;
 
-    stack.push_back(func_tid->check_name(name, params_type));
+    check_func(name, params_type);
 }
 
 // <argf> ::= <var> | <sign> <num> | "(" <oper> ")"
@@ -660,6 +708,14 @@ void Parser::arg()
     // literal or var name
     if (c.level == 2 || c.level == 3)
     {
+        if (c.level == 3)
+        {
+            stack.push_back(what_type(c.token));
+        }
+        else
+        {
+            stack.push_back(cur_tid->check_name(c.token));
+        }
         c = gc();
         // all good
     }

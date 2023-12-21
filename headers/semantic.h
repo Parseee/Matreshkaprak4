@@ -30,16 +30,37 @@ struct func_TID
 {
     std::vector<std::string> name_;
     std::vector<std::string> type_;
+    std::vector<int> num_of_lex;
     std::vector<TID> tid_;
 
     // Adding an identifier of function to the TID
-    void push_name(std::string s, std::string t, std::vector<std::string> p_name);
+    void push_name(std::string s, int n, std::vector<std::string> p_name);
 
     // Checking for the presence of an ID in the TID
     std::string check_name(std::string s, std::vector<std::string> p_type);
 
     // Checking for the presence of an identifier in func_TID (without throwing an error)
     bool find(std::string s);
+
+    void set_type(std::string s, std::string t);
+
+    void set_params_type(std::string s, std::vector<std::string> p_type);
+
+    int get_idx(std::string s)
+    {
+        for (int i = 0; i < name_.size(); ++i)
+            if (name_[i] == s)
+                return i;
+    }
+
+    int get_num_of_lex(int i){
+        return num_of_lex[i];
+    }
+
+    TID get_tid_params(int i)
+    {
+        return tid_[i];
+    }
 };
 class TID_tree
 {
@@ -49,6 +70,8 @@ public:
 
     // Adding a new TID to TID_tree and changing the current TID (cur_ID)
     void create_TID();
+
+    void create_TID(TID tid);
 
     // Deleting a current TID from TID_tree and changing the current TID (cur_ID)
     void del_TID();

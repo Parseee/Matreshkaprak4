@@ -6,6 +6,8 @@
 #include <iostream>
 #include <string>
 
+size_t num_of_line = 1;
+
 int main() {
     setlocale(LC_ALL, "en-US.UTF-8");
     std::vector < Token > lexes;

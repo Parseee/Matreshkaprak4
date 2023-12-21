@@ -85,23 +85,20 @@ void TID::replace(std::string s, std::string t)
 
 // func_TID funcs
 
-void func_TID::push_name(std::string s, std::string t, std::vector<std::string> p_name)
+void func_TID::push_name(std::string s, int n, std::vector<std::string> p_name)
 {
-    int i = 0;
-    for (; i < name_.size(); ++i)
-    {
-        if (s == name_[i])
-            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The name " + s + " has already been used. ");
-    }
     if (cur_tid->find(s))
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The name " + s + " has already been used. ");
 
     name_.push_back(s);
-    type_.push_back(t);
+    type_.push_back("NIL");
+    num_of_lex.push_back(n);
+    TID tmp;
     for (int j = 0; j < p_name.size(); ++j)
     {
-        tid_[i].push_name(p_name[j], "NIL");
+        tmp.push_name(p_name[j], "NIL");
     }
+    tid_.push_back(tmp);
 }
 std::string func_TID::check_name(std::string s, std::vector<std::string> p_type)
 {
@@ -130,6 +127,31 @@ bool func_TID::find(std::string s)
     return false;
 }
 
+void func_TID::set_type(std::string s, std::string t)
+{
+    for (int i = 0; i < name_.size(); ++i)
+    {
+        if (s == name_[i])
+        {
+            type_[i] = t;
+            return;
+        }
+    }
+}
+
+void func_TID::set_params_type(std::string s, std::vector<std::string> p_type)
+{
+    for (int i = 0; i < name_.size(); ++i)
+    {
+        if (s == name_[i])
+        {
+            tid_[i].type_ = p_type;
+            return;
+        }
+    }
+
+}
+
 // TID_tree funcs
 
 void TID_tree::create_TID()
@@ -137,6 +159,15 @@ void TID_tree::create_TID()
     TID_tree *now = new TID_tree;
     now->tid.name_.clear();
     now->tid.type_.clear();
+    now->prev = cur_tid;
+    cur_tid->next = now;
+    cur_tid = now;
+}
+
+void TID_tree::create_TID(TID tid)
+{
+    TID_tree *now = new TID_tree;
+    now->tid = tid;
     now->prev = cur_tid;
     cur_tid->next = now;
     cur_tid = now;
