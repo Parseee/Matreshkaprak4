@@ -183,7 +183,6 @@ void Parser::oper()
 
 void Parser::simple_oper()
 {
-
     stack.push_back(c.token);
 
     c = gc();
@@ -201,7 +200,7 @@ void Parser::simple_oper()
     for (; isType(stack[i]); --i)
     {
         if (stack[i] != t)
-            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". It is not possible to perform an operation with different types: " + t + " " + stack[i]);
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". It is not possible to perform an operation with different types: " + stack[i] + " " + t);
         stack.pop_back();
     }
     if (stack[i] == "max" || stack[i] == "min")
@@ -241,7 +240,7 @@ void Parser::cond_oper()
     for (; isType(stack[i]); --i)
     {
         if (stack[i] != t)
-            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". It is not possible to perform an operation with different types: " + t + " " + stack[i]);
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". It is not possible to perform an operation with different types: " + stack[i] + " " + t);
         stack.pop_back();
     }
     stack[i] = "bool";
@@ -259,7 +258,7 @@ void Parser::loop_for()
     arg();
 
     if (!(stack[stack.size() - 1] == stack[stack.size() - 2] && (stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double")))
-        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". In the loop condition, the variables must be of type int/double, found: " + stack[stack.size() - 1] + " and " + stack[stack.size() - 2]);
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". In the loop condition, the variables must be of type int/double, found: " + stack[stack.size() - 2] + " and " + stack[stack.size() - 1]);
 
     stack.pop_back();
     stack.pop_back();
@@ -439,7 +438,7 @@ void Parser::mod()
     arg();
 
     if (!(stack[stack.size() - 1] == stack[stack.size() - 2] && stack[stack.size() - 1] == "int"))
-        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The mod operation takes values of the int type, found " + stack[stack.size() - 1] + " and " + stack[stack.size() - 2]);
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The mod operation takes values of the int type, found " + stack[stack.size() - 2] + " and " + stack[stack.size() - 1]);
     stack.pop_back();
     stack.pop_back();
 }
@@ -459,7 +458,7 @@ void Parser::incf()
         arg();
 
         if (!(stack[stack.size() - 1] == stack[stack.size() - 2] && (stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double")))
-            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The increment operation takes int/double values, found: " + stack[stack.size() - 1] + " and " + stack[stack.size() - 2]);
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The increment operation takes int/double values, found: " + stack[stack.size() - 2] + " and " + stack[stack.size() - 1]);
 
         stack.pop_back();
         stack.pop_back();
@@ -479,7 +478,7 @@ void Parser::decf()
         arg();
 
         if (!(stack[stack.size() - 1] == stack[stack.size() - 2] && (stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double")))
-            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The decrement operation takes int/double values, found: " + stack[stack.size() - 1] + " and " + stack[stack.size() - 2]);
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The decrement operation takes int/double values, found: " + stack[stack.size() - 2] + " and " + stack[stack.size() - 1]);
 
         stack.pop_back();
         stack.pop_back();
