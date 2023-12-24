@@ -101,14 +101,18 @@ void Parser::oper()
     // loop_for ---------------
     else if (c.token == "idi_poka")
     {
+        cur_tid->create_TID();
         c = gc();
         loop_for();
+        cur_tid->del_TID();
     }
     // loop -------------------
     else if (c.token == "zhivi")
     {
+        cur_tid->create_TID();
         c = gc();
         loop();
+        cur_tid->del_TID();
     }
     // if ---------------------
     else if (c.token == "esli")
@@ -362,6 +366,7 @@ void Parser::if_op()
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " if true condition open parent ");
     }
 
+    cur_tid->create_TID();
     c = gc();
     while (true)
     {
@@ -381,8 +386,10 @@ void Parser::if_op()
             break;
         }
     }
+    cur_tid->del_TID();
 
     // false opers
+    cur_tid->create_TID();
     c = gc();
     if (c.token != "(")
     {
@@ -408,6 +415,7 @@ void Parser::if_op()
             break;
         }
     }
+    cur_tid->del_TID();
 
     c = gc();
     if (c.token != ")")
