@@ -1,6 +1,3 @@
-pribav 1
-golova 1
-telo 1
 zhivi 1
 umri_kogda 1
 idi_poka 1
@@ -18,7 +15,7 @@ LOZH 3
 * 4
 / 4
 ! 4
-partia 4
+pribav 4
 ubav 4
 max 4
 min 4

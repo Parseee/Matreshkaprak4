@@ -11,6 +11,7 @@ public:
     Parser(std::vector < Token > tokens);
     void parse();
     bool is_at_end();
+    int getNumLine(int x);
 
 private:
     int current;
@@ -37,6 +38,7 @@ private:
     void car();
     void cdr();
     void cons();
+    void check_func(std::string name, std::vector<std::string> param_type);
     void func_call();
     void arg_sem();
 

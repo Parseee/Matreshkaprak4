@@ -7,7 +7,7 @@
 #include <regex>
 
 Token c;
-size_t num_of_line = 1;
+extern size_t num_of_line;
 
 TID_tree *tid_tree = new TID_tree, *cur_tid = tid_tree;
 func_TID *func_tid = new func_TID;
@@ -20,10 +20,8 @@ Token Parser::gc()
     if (!is_at_end())
     {
         if (tokens[current].token == "\\n")
-        {
             ++current;
-            ++num_of_line;
-        }
+        num_of_line = getNumLine(current);
         return tokens[current++];
     }
     else
@@ -31,6 +29,16 @@ Token Parser::gc()
         // maybe add another info
         throw std::logic_error("Unexpected end gc");
     }
+}
+int Parser::getNumLine(int cu)
+{
+    int k = 1;
+    for (int i = 0; i < cu; ++i)
+    {
+        if (tokens[i].token == "\\n")
+            ++k;
+    }
+    return k;
 }
 
 bool Parser::is_at_end()
@@ -76,7 +84,7 @@ void Parser::s_exp()
     }
 }
 
-// <oper> ::= <easy_oper> | <hard_oper> | <func> | <car> | <cdr> | <empty>
+// <oper> ::= <easy_oper> | <hard_oper> | <func> | <empty>
 void Parser::oper()
 {
     // simple_oper ----------------------------
@@ -85,7 +93,7 @@ void Parser::oper()
         simple_oper();
     }
     // cond_oper ------------------------------
-    else if (std::regex_match(c.token, std::regex("takzhe|libo|=|>|<|>=|<=|golova|telo")))
+    else if (std::regex_match(c.token, std::regex("takzhe|libo|=|>|<|>=|<=")))
     {
         cond_oper();
     }
@@ -93,14 +101,18 @@ void Parser::oper()
     // loop_for ---------------
     else if (c.token == "idi_poka")
     {
+        cur_tid->create_TID();
         c = gc();
         loop_for();
+        cur_tid->del_TID();
     }
     // loop -------------------
     else if (c.token == "zhivi")
     {
+        cur_tid->create_TID();
         c = gc();
         loop();
+        cur_tid->del_TID();
     }
     // if ---------------------
     else if (c.token == "esli")
@@ -156,16 +168,6 @@ void Parser::oper()
         c = gc();
         setf();
     }
-    // cons -----------------------------------
-    else if (c.token == "partia")
-    {
-        c = gc();
-        arg();
-        while (c.token != ")")
-        {
-            arg();
-        }
-    }
     else
     {
         if (c.token == ")")
@@ -185,7 +187,6 @@ void Parser::oper()
 
 void Parser::simple_oper()
 {
-
     stack.push_back(c.token);
 
     c = gc();
@@ -203,7 +204,7 @@ void Parser::simple_oper()
     for (; isType(stack[i]); --i)
     {
         if (stack[i] != t)
-            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". It is not possible to perform an operation with different types: " + t + " " + stack[i]);
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". It is not possible to perform an operation with different types: " + stack[i] + " " + t);
         stack.pop_back();
     }
     if (stack[i] == "max" || stack[i] == "min")
@@ -237,35 +238,13 @@ void Parser::cond_oper()
         arg();
     }
 
-    int i = stack.size() - 1;
-    std::string t1 = "NIL", t2 = "NIL";
-    auto tmp_stack = stack;
-    for (; isType(stack[i]); --i)
-    {
-        t2 = t1;
-        t1 = stack[i];
-        tmp_stack.pop_back();
-    }
-    if (stack[i] == "golova")
-    {
-        stack = tmp_stack;
-        stack[i] = t1;
-        return;
-    }
-    else if (stack[i] == "telo")
-    {
-        stack = tmp_stack;
-        stack[i] = t2;
-        return;
-    }
-
     std::string t = stack[stack.size() - 1];
     stack.pop_back();
-    i = stack.size() - 1;
+    int i = stack.size() - 1;
     for (; isType(stack[i]); --i)
     {
         if (stack[i] != t)
-            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". It is not possible to perform an operation with different types: " + t + " " + stack[i]);
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". It is not possible to perform an operation with different types: " + stack[i] + " " + t);
         stack.pop_back();
     }
     stack[i] = "bool";
@@ -273,10 +252,7 @@ void Parser::cond_oper()
 
 void Parser::loop_for()
 {
-    if (c.level != 2)
-    {
-        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " var loop_for ");
-    }
+    arg();
     c = gc();
     if (c.token != "ne_stanet")
     {
@@ -284,6 +260,12 @@ void Parser::loop_for()
     }
     c = gc();
     arg();
+
+    if (!(stack[stack.size() - 1] == stack[stack.size() - 2] && (stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double")))
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". In the loop condition, the variables must be of type int/double, found: " + stack[stack.size() - 2] + " and " + stack[stack.size() - 1]);
+
+    stack.pop_back();
+    stack.pop_back();
 
     // c = gc();
     while (true)
@@ -320,6 +302,7 @@ void Parser::loop()
             break;
         }
         oper();
+
         if (c.token != ")")
         {
             throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " loop close parent oper ");
@@ -342,19 +325,10 @@ void Parser::loop()
     c = gc();
     cond_oper();
 
-    c = gc();
-    if (c.token != "(")
-    {
-        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " loop open return paret ");
-    }
+    stack.pop_back();
 
     c = gc();
-    if (c.token != "verni")
-    {
-        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " loop retrun oper ");
-    }
-
-    c = gc(); // end of umri_kogda
+    // end of umri_kogda
     if (c.token != ")")
     {
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " loop close umri_kogda parent ");
@@ -383,6 +357,8 @@ void Parser::if_op()
     c = gc();
     cond_oper();
 
+    stack.pop_back();
+
     // true opers
     c = gc();
     if (c.token != "(")
@@ -390,6 +366,7 @@ void Parser::if_op()
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " if true condition open parent ");
     }
 
+    cur_tid->create_TID();
     c = gc();
     while (true)
     {
@@ -409,8 +386,10 @@ void Parser::if_op()
             break;
         }
     }
+    cur_tid->del_TID();
 
     // false opers
+    cur_tid->create_TID();
     c = gc();
     if (c.token != "(")
     {
@@ -436,6 +415,7 @@ void Parser::if_op()
             break;
         }
     }
+    cur_tid->del_TID();
 
     c = gc();
     if (c.token != ")")
@@ -447,26 +427,35 @@ void Parser::if_op()
 void Parser::write()
 {
     arg();
+    stack.pop_back();
 }
 
 void Parser::read()
 {
     if (c.level != 2)
     {
-        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " loop_for ");
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The read operation takes variable, but found litteral ");
     }
     c = gc();
+    stack.pop_back();
 }
 
 void Parser::mod()
 {
     arg();
     arg();
+
+    if (!(stack[stack.size() - 1] == stack[stack.size() - 2] && stack[stack.size() - 1] == "int"))
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The mod operation takes values of the int type, found " + stack[stack.size() - 2] + " and " + stack[stack.size() - 1]);
+    stack.pop_back();
+    stack.pop_back();
 }
 
 void Parser::ne()
 {
     arg();
+    stack.pop_back();
+    stack.push_back("bool");
 }
 
 void Parser::incf()
@@ -475,7 +464,18 @@ void Parser::incf()
     if (c.token != ")")
     {
         arg();
+
+        if (!(stack[stack.size() - 1] == stack[stack.size() - 2] && (stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double")))
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The increment operation takes int/double values, found: " + stack[stack.size() - 2] + " and " + stack[stack.size() - 1]);
+
+        stack.pop_back();
+        stack.pop_back();
+        return;
     }
+    if (!(stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double"))
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The increment operation takes int/double values, found: " + stack[stack.size() - 1]);
+
+    stack.pop_back();
 }
 
 void Parser::decf()
@@ -484,7 +484,18 @@ void Parser::decf()
     if (c.token != ")")
     {
         arg();
+
+        if (!(stack[stack.size() - 1] == stack[stack.size() - 2] && (stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double")))
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The decrement operation takes int/double values, found: " + stack[stack.size() - 2] + " and " + stack[stack.size() - 1]);
+
+        stack.pop_back();
+        stack.pop_back();
+        return;
     }
+    if (!(stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double"))
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The decrement operation takes int/double values, found: " + stack[stack.size() - 1]);
+
+    stack.pop_back();
 }
 
 void Parser::ret_op()
@@ -496,11 +507,9 @@ void Parser::ret_op()
 void Parser::fact()
 {
     arg();
-    while (c.token != ")")
-    {
-        c = gc();
-        arg();
-    }
+
+    if (!(stack[stack.size() - 1] == "int"))
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The factorial operation take value of the int type, found " + stack[stack.size() - 1]);
 }
 
 void Parser::setf()
@@ -515,9 +524,11 @@ void Parser::setf()
 
         arg();
 
-        if (tid_tree->find(name))
+        if (cur_tid->find(name))
         {
-            tid_tree->replace(name, type);
+            if (func_tid->find(name))
+                throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Cant assign anything to function");
+            cur_tid->replace(name, type);
         }
         else
         {
@@ -531,46 +542,28 @@ void Parser::setf()
     stack.pop_back();
 }
 
-void Parser::func()
+void Parser::check_func(std::string name, std::vector<std::string> param_type)
 {
-    if (c.level != 2)
-    { // name
-        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " no function name ");
-    }
-    std::string name = c.token, type;
-    std::vector<std::string> params_name;
+    int last_cur = current;
+
+    func_tid->set_params_type(name, param_type);
+
+    std::string type = "NIL";
+    int i = func_tid->get_idx(name);
+
+    cur_tid->create_TID(func_tid->get_tid_params(i));
+
+    current = func_tid->get_num_of_lex(i);
 
     c = gc();
-    if (c.token != "(")
-    {
-        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " func open parent ");
-    }
 
-    c = gc();
-    while (c.token != ")")
-    {
-        if (c.level != 2)
-        {
-            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " bad func argument ");
-        }
-
-        params_name.push_back(c.token);
-
-        c = gc();
-    }
-
-    if (c.token != ")")
-    {
-        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " func arg close parent ");
-    }
-
-    c = gc();
     if (c.token != "(")
     {
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " func open opers_group parent ");
     }
 
     c = gc();
+
     while (true)
     {
         if (c.token != "(")
@@ -620,32 +613,68 @@ void Parser::func()
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " func return close parent ");
     }
 
+    cur_tid->del_TID();
+    current = last_cur;
+}
+void Parser::func()
+{
+    if (c.level != 2)
+    { // name
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " no function name ");
+    }
+    std::string name = c.token;
+    std::vector<std::string> params_name;
+
     c = gc();
+    if (c.token != "(")
+    {
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " func open parent ");
+    }
+
+    c = gc();
+    while (c.token != ")")
+    {
+        if (c.level != 2)
+        {
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " bad func argument ");
+        }
+
+        params_name.push_back(c.token);
+
+        c = gc();
+    }
+
+    if (c.token != ")")
+    {
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " func arg close parent ");
+    }
+
+    func_tid->push_name(name, current, params_name);
+
+    c = gc();
+    c = gc();
+
+    for (int i = 1; i > 0; c = gc())
+    {
+        if (c.token == "(")
+            ++i;
+        if (c.token == ")")
+            --i;
+    }
+
+    c = gc();
+    c = gc();
+
+    for (int i = 1; i > 0; c = gc())
+    {
+        if (c.token == "(")
+            ++i;
+        if (c.token == ")")
+            --i;
+    }
     if (c.token != ")")
     {
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " func close parent ");
-    }
-
-    func_tid->push_name(name, type, params_name);
-}
-
-void Parser::car()
-{
-    arg();
-}
-
-void Parser::cdr()
-{
-    arg();
-}
-
-void Parser::cons()
-{
-    arg();
-
-    while (c.token != ")")
-    {
-        arg();
     }
 }
 
@@ -673,7 +702,7 @@ void Parser::func_call()
     }
     stack = cur_stack;
 
-    stack.push_back(func_tid->check_name(name, params_type));
+    check_func(name, params_type);
 }
 
 // <argf> ::= <var> | <sign> <num> | "(" <oper> ")"
@@ -682,6 +711,14 @@ void Parser::arg()
     // literal or var name
     if (c.level == 2 || c.level == 3)
     {
+        if (c.level == 3)
+        {
+            stack.push_back(what_type(c.token));
+        }
+        else
+        {
+            stack.push_back(cur_tid->check_name(c.token));
+        }
         c = gc();
         // all good
     }

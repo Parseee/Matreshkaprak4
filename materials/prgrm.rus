@@ -1,3 +1,7 @@
 (tovarisch x 10)
 (tovarisch y 20)
-(napishi (+ 2 (- y x) 8))
+(func foo(a b)((tovarisch z (+ a b)))(verni z))
+(zhivi (tovarisch w 30) (umri_kogda (= 1 2)))
+(napishi (= w (+ x y)))
+(napishi (+ 2 (foo y x) 9))
+(napishi (= w (+ x y)))
