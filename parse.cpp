@@ -253,7 +253,6 @@ void Parser::cond_oper()
 void Parser::loop_for()
 {
     arg();
-    c = gc();
     if (c.token != "ne_stanet")
     {
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " ne_stanet loop_for ");
