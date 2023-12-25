@@ -41,7 +41,7 @@ std::string what_type(std::string s)
 
 bool isType(std::string s)
 {
-    if (std::regex_match(s, std::regex("int|double|string|char|bool")))
+    if (std::regex_match(s, std::regex("int|double|string|char|bool|NIL")))
     {
         return true;
     }
@@ -221,7 +221,7 @@ void TID_tree::replace(std::string s, std::string t)
 {
     if (this->tid.check_name(s) == "-_-")
     {
-        this->prev->check_name(s);
+        this->prev->replace(s, t);
     }
     else
     {

@@ -57,7 +57,7 @@ void Parser::s_exp()
 {
 
     // tid_tree->create_TID();
-
+    stack.clear();
     if (c.token != "(")
     {
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " s_exp open parent ");
@@ -600,18 +600,18 @@ void Parser::check_func(std::string name, std::vector<std::string> param_type)
     if (size_stack == stack.size())
     {
         type = "NIL";
+        stack.push_back("NIL");
     }
     else
     {
         type = stack[stack.size() - 1];
-        stack.pop_back();
     }
 
     if (c.token != ")")
     {
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " func return close parent ");
     }
-
+    func_tid->set_type(name, type);
     cur_tid->del_TID();
     current = last_cur;
 }
