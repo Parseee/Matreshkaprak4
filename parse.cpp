@@ -608,10 +608,11 @@ void Parser::setf()
 
         c = gc();
 
-        std::string type = what_type(c.token);
-
         arg();
 
+        std::string type = stack.back();
+        
+        stack.pop_back();
         if (cur_tid->find(name))
         {
             if (func_tid->find(name))
@@ -627,7 +628,6 @@ void Parser::setf()
     {
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " can't assign to non-var ");
     }
-    stack.pop_back();
 }
 
 void Parser::check_func(std::string name, std::vector<std::string> param_type)

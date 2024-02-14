@@ -1,10 +1,15 @@
-(func f(x y)((tovarisch x (- (* y y) x)))(verni x))
-(func f1(x y)((tovarisch x (+ (* y y) x)))(verni x))
-(func f2(x y)((tovarisch x (/ (* y y) x)))(verni x))
+(func f(a b)((tovarisch a (- (* b b) a)))(verni a))
+(func f1(a b)((tovarisch a (+ (* b b) a)))(verni a))
+(func f2(a b)((tovarisch a (/ (* b b) a)))(verni a))
 (tovarisch x 10)
 
 
 (tovarisch y 10)
+(tovarisch z 10.1)
+
+
+(tovarisch w 10.2)
 (zhivi (tovarisch x (- x y)) (umri_kogda (= (mod x 2) 0)))
 (idi_poka x ne_stanet 20 (tovarisch y (/ x 2)))
-(f (f2 x y) (f1 x y))
+(f (f2 x y) (+ x y))
+(f z w)

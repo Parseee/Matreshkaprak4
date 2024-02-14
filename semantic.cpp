@@ -19,23 +19,14 @@ std::string what_type(std::string s)
     }
     else
     {
-        bool isDouble = false;
         for (int i = 0; i < s.size(); ++i)
         {
             if (s[i] == '.')
             {
-                isDouble = true;
-                break;
+                return "double";
             }
         }
-        if (isDouble)
-        {
-            return "double";
-        }
-        else
-        {
-            return "int";
-        }
+        return "int";
     }
 }
 
@@ -143,7 +134,6 @@ void func_TID::set_params_type(std::string s, std::vector<std::string> p_type)
             return;
         }
     }
-
 }
 
 // TID_tree funcs
@@ -170,7 +160,8 @@ void TID_tree::create_TID(TID tid)
 void TID_tree::del_TID()
 {
     TID_tree *p = tid_tree, *q;
-    for (; p->next != cur_tid; p = p->next);
+    for (; p->next != cur_tid; p = p->next)
+        ;
     p->next = nullptr;
     q = cur_tid;
     cur_tid = p;
