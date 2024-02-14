@@ -31,6 +31,13 @@ void findError(std::string cur)
 
 std::vector<Token> lexem_array;
 
+void add(std::string &cur, char c)
+{
+    if (c == '\n')
+        lexemes.push_back(Token("\\n",  5));
+    else
+        cur += c;
+}
 std::vector<Token> lex_an(const std::string text)
 {
     lexem_array = initialize_lexem_array("materials/lexic.txt");
@@ -44,14 +51,14 @@ std::vector<Token> lex_an(const std::string text)
     {
         if (text[i] == '\"')
         {
-            cur += text[i++];
+            add(cur, text[i++]);
             while (text[i] != '\"' && i < text.size())
             {
-                cur += text[i++];
+                add(cur, text[i++]);
             }
             if (i < text.size())
             {
-                cur += text[i++];
+                add(cur, text[i++]);
             }
             else
             {
@@ -135,7 +142,7 @@ std::vector<Token> lex_an(const std::string text)
         }
         else
         {
-            cur += text[i];
+            add(cur, text[i]);
         }
     }
     if (cur.size() != 0)

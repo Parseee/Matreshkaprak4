@@ -14,13 +14,13 @@
 <d_num_extr> ::= <num> <d_num_extr> | <empty>
 <str> ::= <char> <str_extr>
 <str_extr> ::= <char> <str_extr> | <empty>
-<oper> ::= <easy_oper> | <hard_oper> | <func> | <car> | <cdr> /*| <empty> */
+<oper> ::= <easy_oper> | <hard_oper> | <func_call> | <empty>
 <easy_oper> ::= <simple_oper> | <cond_oper>
 <argf> ::= <var> | <sign> <num> | "(" <oper> ")"
 <simple_oper> ::= <simple> ( " " <argf> )+
-<cond_oper> ::= <cond> ( " " <argf> )+
+<cond_oper> ::= <cond> ( " " <arg> )+
 <simple> ::= "+" | "-" | "*" | "/" | "max" | "min"
-<cond> ::= "takzhe" | "libo" | "=" | "/=" | ">" | "<" | ">=" | "<="
+<cond> ::= "takzhe" | "libo" | "=" | "!=" | ">" | "<" | ">=" | "<="
 <hard_oper> ::= <loop_for> | <loop> | <if> | <write> | <read> | <mod> | <not> | <incf> | <decf> | <fact> | <setf> | <func_call>
 <loop_for> ::= "idi_poka " <var> " ne_stanet " <num> (<oper>)*
 <loop> ::= "zhivi " (<oper>)* "(umri_kogda (" <cond_oper> "))"

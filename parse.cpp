@@ -1,6 +1,7 @@
 #include "headers/parse.h"
 #include "headers/token.h"
 #include "headers/semantic.h"
+#include "headers/poliz.h"
 
 #include <vector>
 #include <iostream>
@@ -13,14 +14,20 @@ TID_tree *tid_tree = new TID_tree, *cur_tid = tid_tree;
 func_TID *func_tid = new func_TID;
 std::vector<std::string> stack;
 
+POLIZ poliz;
+
 Parser::Parser(std::vector<Token> tokens) : tokens(tokens), current(0) {}
 
 Token Parser::gc()
 {
     if (!is_at_end())
     {
-        if (tokens[current].token == "\\n")
+        while (!is_at_end() && tokens[current].token == "\\n")
             ++current;
+
+        if (is_at_end())
+            return Token("-_-", 404);
+
         num_of_line = getNumLine(current);
         return tokens[current++];
     }
@@ -43,13 +50,29 @@ int Parser::getNumLine(int cu)
 
 bool Parser::is_at_end()
 {
-    return static_cast<size_t>(current) == tokens.size();
+    return static_cast<size_t>(current) >= tokens.size();
 }
 
 void Parser::parse()
 {
     c = gc();
     s_exp();
+
+    poliz.show();
+
+    for (auto it : func_tid->name_)
+    {
+        auto x = poliz.get_func_info(it);
+        for (auto it : x)
+        {
+            for (auto jt : it)
+            {
+                std::cout << jt << " ";
+            }
+            std::cout << "\n";
+        }
+        std::cout << "________________\n";
+    }
 }
 
 // <s_exp> ::= "(" <oper> ") " | <s_exp>
@@ -70,16 +93,23 @@ void Parser::s_exp()
     }
     else
     {
+        poliz.add_lex("(");
         oper();
-        if (c.token != ")")
-        {
-            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " s_exp close parent ");
-        }
+        poliz.add_lex(")");
     }
+    if (c.token != ")")
+    {
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " s_exp close parent ");
+    }
+
     // for extending s_exp
     if (static_cast<size_t>(current) < tokens.size())
     {
         c = gc();
+
+        if (c.level == 404)
+            return;
+
         s_exp();
     }
 }
@@ -93,7 +123,7 @@ void Parser::oper()
         simple_oper();
     }
     // cond_oper ------------------------------
-    else if (std::regex_match(c.token, std::regex("takzhe|libo|=|>|<|>=|<=")))
+    else if (std::regex_match(c.token, std::regex("takzhe|libo|=|>|<|>=|<=|!=")))
     {
         cond_oper();
     }
@@ -125,48 +155,56 @@ void Parser::oper()
     {
         c = gc();
         write();
+        poliz.add_lex("write");
     }
     // read -------------------
     else if (c.token == "sprosi")
     {
         c = gc();
         read();
+        poliz.add_lex("read");
     }
     // mod --------------------
     else if (c.token == "mod")
     {
         c = gc();
         mod();
+        poliz.add_lex("mod");
     }
     // not --------------------
     else if (c.token == "ne")
     {
         c = gc();
         ne();
+        poliz.add_lex("not");
     }
     // incf -------------------
     else if (c.token == "pribav")
     {
         c = gc();
         incf();
+        poliz.add_lex("incf");
     }
     // decf -------------------
     else if (c.token == "ubav")
     {
         c = gc();
         decf();
+        poliz.add_lex("decf");
     }
     // fact -------------------
     else if (c.token == "!")
     {
         c = gc();
         fact();
+        poliz.add_lex("fact");
     }
     // setf -------------------
     else if (c.token == "tovarisch")
     {
         c = gc();
         setf();
+        poliz.add_lex("setf");
     }
     else
     {
@@ -188,6 +226,7 @@ void Parser::oper()
 void Parser::simple_oper()
 {
     stack.push_back(c.token);
+    std::string cur_oper = c.token;
 
     c = gc();
 
@@ -195,6 +234,7 @@ void Parser::simple_oper()
     while (c.token != ")")
     {
         arg();
+        poliz.add_lex(cur_oper);
     }
 
     std::string t = stack[stack.size() - 1];
@@ -229,6 +269,7 @@ void Parser::cond_oper()
 {
 
     stack.push_back(c.token);
+    std::string cur_oper = (c.token == "takzhe" ? "and" : (c.token == "libo" ? "or" : c.token));
 
     c = gc();
 
@@ -236,6 +277,7 @@ void Parser::cond_oper()
     while (c.token != ")")
     {
         arg();
+        poliz.add_lex(cur_oper);
     }
 
     std::string t = stack[stack.size() - 1];
@@ -252,13 +294,33 @@ void Parser::cond_oper()
 
 void Parser::loop_for()
 {
-    arg();
+    int idx_in = poliz.size();
+    if (c.level != 2)
+    {
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of variadle");
+    }
+    stack.push_back(cur_tid->check_name(c.token));
+
+    poliz.add_lex(c.token);
+    std::string var = c.token;
+    c = gc();
     if (c.token != "ne_stanet")
     {
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " ne_stanet loop_for ");
     }
     c = gc();
-    arg();
+    if (c.level != 3)
+    {
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of integer litteral");
+    }
+    stack.push_back(what_type(c.token));
+
+    poliz.add_lex(c.token);
+
+    poliz.add_lex("!=");
+    int idx_out = poliz.size();
+    poliz.add_lex("");
+    poliz.add_lex("F@");
 
     if (!(stack[stack.size() - 1] == stack[stack.size() - 2] && (stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double")))
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". In the loop condition, the variables must be of type int/double, found: " + stack[stack.size() - 2] + " and " + stack[stack.size() - 1]);
@@ -266,7 +328,7 @@ void Parser::loop_for()
     stack.pop_back();
     stack.pop_back();
 
-    // c = gc();
+    c = gc();
     while (true)
     {
         if (c.token != "(")
@@ -285,10 +347,20 @@ void Parser::loop_for()
             break;
         }
     }
+
+    poliz.add_lex(var);
+    poliz.add_lex(var);
+    poliz.add_lex("1");
+    poliz.add_lex("+");
+    poliz.add_lex("setf");
+    poliz.add_lex(std::to_string(idx_in));
+    poliz.add_lex("@");
+    poliz.insert_lex(std::to_string(poliz.size()), idx_out);
 }
 
 void Parser::loop()
 {
+    int idx_in = poliz.size();
     while (true)
     {
         if (c.token != "(")
@@ -321,8 +393,13 @@ void Parser::loop()
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " loop cond_oper condition ");
     }
 
-    c = gc();
     cond_oper();
+
+    int idx_out = poliz.size();
+    poliz.add_lex("");
+    poliz.add_lex("F@");
+    poliz.add_lex(std::to_string(idx_in));
+    poliz.add_lex("@");
 
     stack.pop_back();
 
@@ -338,6 +415,7 @@ void Parser::loop()
     {
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " loop close parent ");
     }
+    poliz.insert_lex(std::to_string(poliz.size()), idx_out);
 }
 
 void Parser::if_op()
@@ -353,10 +431,13 @@ void Parser::if_op()
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " if condition ");
     }
 
-    c = gc();
     cond_oper();
 
     stack.pop_back();
+
+    int idx_f = poliz.size();
+    poliz.add_lex("");
+    poliz.add_lex("F@");
 
     // true opers
     c = gc();
@@ -386,6 +467,11 @@ void Parser::if_op()
         }
     }
     cur_tid->del_TID();
+
+    int idx_out = poliz.size();
+    poliz.add_lex("");
+    poliz.add_lex("@");
+    poliz.insert_lex(std::to_string(poliz.size()), idx_f);
 
     // false opers
     cur_tid->create_TID();
@@ -421,6 +507,7 @@ void Parser::if_op()
     {
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of" + " if close parent ");
     }
+    poliz.insert_lex(std::to_string(poliz.size()), idx_out);
 }
 
 void Parser::write()
@@ -436,7 +523,6 @@ void Parser::read()
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The read operation takes variable, but found litteral ");
     }
     c = gc();
-    stack.pop_back();
 }
 
 void Parser::mod()
@@ -501,6 +587,7 @@ void Parser::ret_op()
 {
     c = gc();
     arg();
+    poliz.add_lex("return");
 }
 
 void Parser::fact()
@@ -516,6 +603,8 @@ void Parser::setf()
     if (c.level == 2)
     {
         std::string name = c.token;
+
+        poliz.add_lex(name);
 
         c = gc();
 
@@ -563,6 +652,8 @@ void Parser::check_func(std::string name, std::vector<std::string> param_type)
 
     c = gc();
 
+    poliz.add_lex("(");
+
     while (true)
     {
         if (c.token != "(")
@@ -582,6 +673,7 @@ void Parser::check_func(std::string name, std::vector<std::string> param_type)
             break;
         }
     }
+    poliz.add_lex(")");
 
     c = gc();
     if (c.token != "(")
@@ -595,7 +687,9 @@ void Parser::check_func(std::string name, std::vector<std::string> param_type)
     }
     int size_stack = stack.size();
 
+    poliz.add_lex("(");
     ret_op();
+    poliz.add_lex(")");
 
     if (size_stack == stack.size())
     {
@@ -653,6 +747,7 @@ void Parser::func()
     c = gc();
     c = gc();
 
+    poliz.inFunc();
     for (int i = 1; i > 0; c = gc())
     {
         if (c.token == "(")
@@ -660,6 +755,7 @@ void Parser::func()
         if (c.token == ")")
             --i;
     }
+    poliz.outFunc();
 
     c = gc();
     c = gc();
@@ -694,6 +790,10 @@ void Parser::func_call()
         arg();
     }
 
+    poliz.add_lex(name);
+    poliz.add_lex("CALL");
+    poliz.inFunc();
+
     std::vector<std::string> params_type;
     for (; i < stack.size(); ++i)
     {
@@ -702,6 +802,8 @@ void Parser::func_call()
     stack = cur_stack;
 
     check_func(name, params_type);
+
+    poliz.outFuncCall(name);
 }
 
 // <argf> ::= <var> | <sign> <num> | "(" <oper> ")"
@@ -718,19 +820,21 @@ void Parser::arg()
         {
             stack.push_back(cur_tid->check_name(c.token));
         }
+        poliz.add_lex(c.token);
         c = gc();
         // all good
     }
     else if (c.token == "(")
     {
+        poliz.push_stack(c.token);
         c = gc();
         oper();
         // c = gc();
         if (c.token != ")")
         {
-            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of"
-                                                                                                      " arg close oper parent");
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of arg close oper parent");
         }
+        poliz.push_stack(c.token);
         c = gc();
     }
     else if (c.token == ")")
@@ -739,8 +843,7 @@ void Parser::arg()
     }
     else
     {
-        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of"
-                                                                                                  " bad argument ");
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of bad argument ");
     }
     return;
 }

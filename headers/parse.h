@@ -53,3 +53,12 @@ private:
 };
 
 bool parse();
+
+
+/*
+(tovarisch x 11)
+(tovarisch y 11)
+(tovarisch z 11)
+(esli (< z (+ (* x y) 5)) ((tovarisch a (< x y)) (tovarisch z (/ (+ x 6) (- a y))))((tovarisch z (* y 2))))
+(takzhe PRAVDA PRAVDA PRAVDA (libo PRAVDA (libo (takzhe (libo PRAVDA PRAVDA) (libo PRAVDA PRAVDA)) (takzhe PRAVDA PRAVDA))))
+*/
