@@ -19,23 +19,14 @@ std::string what_type(std::string s)
     }
     else
     {
-        bool isDouble = false;
         for (int i = 0; i < s.size(); ++i)
         {
             if (s[i] == '.')
             {
-                isDouble = true;
-                break;
+                return "double";
             }
         }
-        if (isDouble)
-        {
-            return "double";
-        }
-        else
-        {
-            return "int";
-        }
+        return "int";
     }
 }
 
@@ -100,21 +91,15 @@ void func_TID::push_name(std::string s, int n, std::vector<std::string> p_name)
     }
     tid_.push_back(tmp);
 }
-std::string func_TID::check_name(std::string s, std::vector<std::string> p_type)
+std::string func_TID::func_type(std::string s)
 {
     for (int i = 0; i < name_.size(); ++i)
     {
         if (s == name_[i])
         {
-            for (int j = 0; j < p_type.size(); ++j)
-            {
-                tid_[i].type_[j] = p_type[j];
-            }
             return type_[i];
         }
     }
-    throw std::logic_error("in line: " + std::to_string(num_of_line) + ". No function named " + s);
-    return "-_-";
 }
 
 bool func_TID::find(std::string s)
@@ -149,7 +134,6 @@ void func_TID::set_params_type(std::string s, std::vector<std::string> p_type)
             return;
         }
     }
-
 }
 
 // TID_tree funcs

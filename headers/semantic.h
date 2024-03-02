@@ -25,6 +25,10 @@ struct TID
 
     // Replacing the ID type
     void replace(std::string s, std::string t);
+
+    std::vector<std::string> get_names() { return name_; }
+    
+    std::vector<std::string> get_types() { return type_; }
 };
 struct func_TID
 {
@@ -37,7 +41,7 @@ struct func_TID
     void push_name(std::string s, int n, std::vector<std::string> p_name);
 
     // Checking for the presence of an ID in the TID
-    std::string check_name(std::string s, std::vector<std::string> p_type);
+    std::string func_type(std::string s);
 
     // Checking for the presence of an identifier in func_TID (without throwing an error)
     bool find(std::string s);
@@ -53,7 +57,8 @@ struct func_TID
                 return i;
     }
 
-    int get_num_of_lex(int i){
+    int get_num_of_lex(int i)
+    {
         return num_of_lex[i];
     }
 

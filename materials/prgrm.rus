@@ -1,7 +1,15 @@
+(func f(a b)((tovarisch a (- (* b b) a)))(verni a))
+(func f1(a b)((tovarisch a (+ (* b b) a)))(verni a))
+(func f2(a b)((tovarisch a (/ (* b b) a)))(verni a))
 (tovarisch x 10)
-(tovarisch y 20)
-(func foo(a b)((tovarisch z 12))(verni z))
-(zhivi (tovarisch x "loh") (umri_kogda (= 1 2)))
-(esli (< x y 1) ((tovarisch x "loh")) ((tovarisch w (- x y))))
-(idi_poka x ne_stanet y (tovarisch w (+ x y 1)))
-(napishi (+ 2 (foo "4987898274" x) x))
+
+
+(tovarisch y 10)
+(tovarisch z 10.1)
+
+
+(tovarisch w 10.2)
+(zhivi (tovarisch x (- x y)) (umri_kogda (= (mod x 2) 0)))
+(idi_poka x ne_stanet 20 (tovarisch y (/ x 2)))
+(f (f2 x y) (+ x y))
+(f z w)
