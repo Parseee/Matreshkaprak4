@@ -15,7 +15,7 @@ int main()
     try
     {
 
-        lexes = lex_an(read_file("materials/prgrm.rus"));
+        lexes = lex_an(read_file("../materials/prgrm.rus"));
     }
     catch (std::vector<std::invalid_argument> e)
     {
