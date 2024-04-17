@@ -155,14 +155,12 @@ void Parser::oper()
     {
         c = gc();
         write();
-        poliz.add_lex("write");
     }
     // read -------------------
     else if (c.token == "sprosi")
     {
         c = gc();
         read();
-        poliz.add_lex("read");
     }
     // mod --------------------
     else if (c.token == "mod")
@@ -512,8 +510,21 @@ void Parser::if_op()
 
 void Parser::write()
 {
+    int s = stack.size();
     arg();
-    stack.pop_back();
+    if(stack.size() > s)
+        stack.pop_back();
+    poliz.add_lex("write");
+    std::cerr << "stack size on write: " << stack.size() << std::endl;
+    while (c.token != ")")
+    {
+        s = stack.size();
+        arg();
+        if(stack.size() > s)
+            stack.pop_back();
+        poliz.add_lex("write");
+    }
+    
 }
 
 void Parser::read()
@@ -522,7 +533,19 @@ void Parser::read()
     {
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The read operation takes variable, but found litteral ");
     }
+    poliz.add_lex(c.token);
+    poliz.add_lex("read");
     c = gc();
+    while (c.token != ")")
+    {
+        if (c.level != 2)
+        {
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The read operation takes variable, but found litteral ");
+        }
+        poliz.add_lex(c.token);
+        poliz.add_lex("read");
+        c = gc();
+    }
 }
 
 void Parser::mod()
@@ -540,7 +563,7 @@ void Parser::ne()
 {
     arg();
     stack.pop_back();
-    stack.push_back("bool");
+    stack.push_back("not");
 }
 
 void Parser::incf()
