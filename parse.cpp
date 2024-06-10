@@ -11,10 +11,10 @@ Token c;
 extern size_t num_of_line;
 
 TID_tree *tid_tree = new TID_tree, *cur_tid = tid_tree;
-func_TID *func_tid = new func_TID;
+extern func_TID *func_tid;
 std::vector<std::string> stack;
 
-POLIZ poliz;
+extern POLIZ poliz;
 
 Parser::Parser(std::vector<Token> tokens) : tokens(tokens), current(0) {}
 
@@ -58,21 +58,7 @@ void Parser::parse()
     c = gc();
     s_exp();
 
-    poliz.show();
-
-    for (auto it : func_tid->name_)
-    {
-        auto x = poliz.get_func_info(it);
-        for (auto it : x)
-        {
-            for (auto jt : it)
-            {
-                std::cout << jt << " ";
-            }
-            std::cout << "\n";
-        }
-        std::cout << "________________\n";
-    }
+    
 }
 
 // <s_exp> ::= "(" <oper> ") " | <s_exp>
@@ -321,7 +307,7 @@ void Parser::loop_for()
     poliz.add_lex("F@");
 
     if (!(stack[stack.size() - 1] == stack[stack.size() - 2] && (stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double")))
-        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". In the loop condition, the variables must be of type int/double, found: " + stack[stack.size() - 2] + " and " + stack[stack.size() - 1]);
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". In the loop condition, the both variables must be of type int/double, found: " + stack[stack.size() - 2] + " and " + stack[stack.size() - 1]);
 
     stack.pop_back();
     stack.pop_back();
@@ -515,7 +501,7 @@ void Parser::write()
     if(stack.size() > s)
         stack.pop_back();
     poliz.add_lex("write");
-    std::cerr << "stack size on write: " << stack.size() << std::endl;
+    
     while (c.token != ")")
     {
         s = stack.size();

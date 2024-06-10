@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "semantic.h"
+extern func_TID *func_tid;
 
 class POLIZ
 {

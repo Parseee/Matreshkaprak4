@@ -1,12 +1,18 @@
+
+
 #include "headers/io_kit.h"
 #include "headers/lexem_analyze.h"
 #include "headers/token.h"
 #include "headers/parse.h"
+#include "headers/semantic.h"
+#include "headers/poliz.h"
 
 #include <iostream>
 #include <string>
 
 size_t num_of_line = 1;
+func_TID *func_tid = new func_TID;
+POLIZ poliz;
 
 int main()
 {
@@ -14,7 +20,6 @@ int main()
     std::vector<Token> lexes;
     try
     {
-
         lexes = lex_an(read_file("../materials/prgrm.rus"));
     }
     catch (std::vector<std::invalid_argument> e)
@@ -30,6 +35,22 @@ int main()
     {
         Parser parser(lexes);
         parser.parse();
+        //------------Show_POLIZ------------------
+        poliz.show();
+        for (auto it : func_tid->name_)
+        {
+            auto x = poliz.get_func_info(it);
+            for (auto it : x)
+            {
+                for (auto jt : it)
+                {
+                    std::cout << jt << " ";
+                }
+                std::cout << "\n";
+            }
+            std::cout << "________________\n";
+        }
+        //--------------------------------------------*/
     }
     catch (std::logic_error e)
     {
