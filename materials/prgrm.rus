@@ -1,4 +1,2 @@
-(tovarisch x 0)
-(sprosi x)
-(napishi x " binary: ")
-(zhivi (napishi (mod x 2))(tovarisch x (/ x 2)) (umri_kogda (< x 0)))
+(tovarisch i 0)
+(idi_poka i ne_stanet 20 (esli (= (mod i 2) 0)((napishi i))((napishi " - chet\n"))))

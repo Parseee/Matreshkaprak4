@@ -40,9 +40,10 @@ void add(std::string &cur, char c)
 }
 std::vector<Token> lex_an(const std::string text)
 {
-    lexem_array = initialize_lexem_array("materials/lexic.txt");
+    lexem_array = initialize_lexem_array("../materials/lexic.txt");
     for (int i = 0; i < lexem_array.size(); ++i)
     {
+        std::cout << lexem_array[i].token << " " << lexem_array[i].level << '\n';
         lex_type->insert(lex_type, {lexem_array[i].token, lexem_array[i].level});
     }
 

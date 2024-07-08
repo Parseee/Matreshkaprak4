@@ -8,8 +8,11 @@ func 1
 esli 1
 tovarisch 1
 verni 1
+v_stroku 1
 PRAVDA 3
 LOZH 3
+true 3
+false 3
 + 4
 - 4
 * 4

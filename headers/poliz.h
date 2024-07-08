@@ -18,6 +18,8 @@ public:
     POLIZ() = default;
     ~POLIZ() = default;
 
+    std::vector<std::string> getPOLIZ(){ return vec_; }
+
     void show()
     {
         std::cout << "________________\n";

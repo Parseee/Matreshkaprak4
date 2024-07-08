@@ -32,6 +32,7 @@ private:
     void incf();
     void decf();
     void ret_op();
+    void to_str();
     void fact();
     void setf();
     void func();

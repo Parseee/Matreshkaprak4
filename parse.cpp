@@ -79,9 +79,9 @@ void Parser::s_exp()
     }
     else
     {
-        poliz.add_lex("(");
+        //poliz.add_lex("(");
         oper();
-        poliz.add_lex(")");
+        //poliz.add_lex(")");
     }
     if (c.token != ")")
     {
@@ -190,6 +190,13 @@ void Parser::oper()
         setf();
         poliz.add_lex("setf");
     }
+    // to_str -------------------
+    else if (c.token == "v_stroku")
+    {
+        c = gc();
+        to_str();
+        poliz.add_lex("to_str");
+    }
     else
     {
         if (c.token == ")")
@@ -231,7 +238,19 @@ void Parser::simple_oper()
             throw std::logic_error("in line: " + std::to_string(num_of_line) + ". It is not possible to perform an operation with different types: " + stack[i] + " " + t);
         stack.pop_back();
     }
-    if (stack[i] == "max" || stack[i] == "min")
+    if (stack[i] == "+")
+    {
+        if (t == "int" || t == "double" || t == "string")
+        {
+            stack[i] = t;
+            return;
+        }
+        else
+        {
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Operation " + stack[i] + " accept arguments of type int/double/string, found: " + t);
+        }
+    }
+    else
     {
         if (t == "int" || t == "double")
         {
@@ -240,12 +259,8 @@ void Parser::simple_oper()
         }
         else
         {
-            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Min/max operations accept arguments of type int/double, not found: " + t);
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Operation " + stack[i] + " accept arguments of type int/double, found: " + t);
         }
-    }
-    else
-    {
-        stack[i] = t;
     }
 }
 
@@ -273,7 +288,19 @@ void Parser::cond_oper()
             throw std::logic_error("in line: " + std::to_string(num_of_line) + ". It is not possible to perform an operation with different types: " + stack[i] + " " + t);
         stack.pop_back();
     }
-    stack[i] = "bool";
+    if (cur_oper == "and" or cur_oper == "or")
+    {
+        if (t == "bool")
+        {
+            stack[i] = "bool";
+            return;
+        }
+        else
+        {
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Operation " + stack[i] + " accept arguments of type bool, not found: " + t);
+        }
+    }
+    stack[i] = "bool";        
 }
 
 void Parser::loop_for()
@@ -335,8 +362,7 @@ void Parser::loop_for()
     poliz.add_lex(var);
     poliz.add_lex(var);
     poliz.add_lex("1");
-    poliz.add_lex("+");
-    poliz.add_lex("setf");
+    poliz.add_lex("incf");
     poliz.add_lex(std::to_string(idx_in));
     poliz.add_lex("@");
     poliz.insert_lex(std::to_string(poliz.size()), idx_out);
@@ -381,7 +407,7 @@ void Parser::loop()
 
     int idx_out = poliz.size();
     poliz.add_lex("");
-    poliz.add_lex("F@");
+    poliz.add_lex("T@");
     poliz.add_lex(std::to_string(idx_in));
     poliz.add_lex("@");
 
@@ -542,14 +568,13 @@ void Parser::mod()
     if (!(stack[stack.size() - 1] == stack[stack.size() - 2] && stack[stack.size() - 1] == "int"))
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The mod operation takes values of the int type, found " + stack[stack.size() - 2] + " and " + stack[stack.size() - 1]);
     stack.pop_back();
-    stack.pop_back();
 }
 
 void Parser::ne()
 {
     arg();
-    stack.pop_back();
-    stack.push_back("not");
+    if (!(stack[stack.size() - 1] == "bool"))
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The factorial operation take value of the bool type, found " + stack[stack.size() - 1]);
 }
 
 void Parser::incf()
@@ -565,6 +590,9 @@ void Parser::incf()
         stack.pop_back();
         stack.pop_back();
         return;
+    }
+    else{
+        poliz.add_lex("1");
     }
     if (!(stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double"))
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The increment operation takes int/double values, found: " + stack[stack.size() - 1]);
@@ -586,6 +614,9 @@ void Parser::decf()
         stack.pop_back();
         return;
     }
+    else{
+        poliz.add_lex("1");
+    }
     if (!(stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double"))
         throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The decrement operation takes int/double values, found: " + stack[stack.size() - 1]);
 
@@ -597,6 +628,15 @@ void Parser::ret_op()
     c = gc();
     arg();
     poliz.add_lex("return");
+}
+
+void Parser::to_str()
+{
+    arg();
+    if (!(stack[stack.size() - 1] == "int"))
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". The v_stroku operation take value of the int type, found " + stack[stack.size() - 1]);
+    stack.pop_back();
+    stack.push_back("string");
 }
 
 void Parser::fact()
@@ -829,7 +869,12 @@ void Parser::arg()
         {
             stack.push_back(cur_tid->check_name(c.token));
         }
-        poliz.add_lex(c.token);
+        if(c.token == "PRAVDA" || c.token == "LOZH"){
+            poliz.add_lex((c.token == "PRAVDA") ? "true" : "false");
+        }else{
+            poliz.add_lex(c.token);
+        }
+        
         c = gc();
         // all good
     }

@@ -4,7 +4,7 @@
 std::vector < Token >
     initialize_lexem_array(const std::string s) {
     std::vector < Token > lex_array;
-    std::ifstream input("materials/lexic.txt");
+    std::ifstream input(s);
     lex_array.push_back(Token ("\n", 0));
     std::string name;
     int priority;
