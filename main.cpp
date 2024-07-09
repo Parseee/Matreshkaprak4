@@ -520,5 +520,11 @@ int main()
 (tovarisch i 0)
 (idi_poka i ne_stanet 20 (esli (= (mod i 2) 0)((napishi i))((napishi " - chet\n"))))
 
-------
+------ check work func -------------------------
+(func foo (a b) ( (tovarisch c (+ a b)) ) (verni c) )
+(napishi (+ 1 2) "\n")
+(napishi (- 1 2) "\n")
+(napishi (+ (foo 1 2) 2))
+
+
 */
