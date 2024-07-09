@@ -1,5 +1,7 @@
-(func foo (a b) ( (tovarisch c (+ a b)) ) (verni c) )
-
-(napishi (+ 1 2) "\n")
-(napishi (- 1 2) "\n")
-(napishi (+ (foo 1 2) 2))
+(tovarisch x 0)
+(sprosi x)
+(napishi x " binary: ")
+(tovarisch res "")
+(tovarisch tmp 1)
+(zhivi (tovarisch res (+ (v_stroku (mod x 2)) res))(tovarisch x (/ x 2)) (umri_kogda (= x 0)))
+(napishi res)

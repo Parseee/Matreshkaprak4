@@ -93,9 +93,11 @@ int main()
             }
             std::cout << "\n";
         }
-        std::cout << "________________\n\n\n\n\n";
+        std::cout << "________________\n";
     }
     //--------------------------------------------*/
+    std::cout << "\n\n\n\n\n";
+    
     std::vector<std::string> main_poliz = poliz.getPOLIZ();
     std::vector<std::string> func_poliz;
     std::vector<std::string> var_name;
@@ -508,12 +510,12 @@ int main()
 (func p9 () (not ywvo -9))
 
 ----- num from 10SS to 2SS ---------
-(tovarisch x 0)
+((tovarisch x 0)
 (sprosi x)
 (napishi x " binary: ")
 (tovarisch res "")
 (tovarisch tmp 1)
-(zhivi (tovarisch res (+ res (v_stroku (mod x 2))))(tovarisch x (/ x 2)) (umri_kogda (= x 0)))
+(zhivi (tovarisch res (+ (v_stroku (mod x 2)) res))(tovarisch x (/ x 2)) (umri_kogda (= x 0)))
 (napishi res)
 
 ------ check work loop and else ------------------
