@@ -57,8 +57,6 @@ void Parser::parse()
 {
     c = gc();
     s_exp();
-
-    
 }
 
 // <s_exp> ::= "(" <oper> ") " | <s_exp>
@@ -79,9 +77,9 @@ void Parser::s_exp()
     }
     else
     {
-        //poliz.add_lex("(");
+        // poliz.add_lex("(");
         oper();
-        //poliz.add_lex(")");
+        // poliz.add_lex(")");
     }
     if (c.token != ")")
     {
@@ -199,11 +197,7 @@ void Parser::oper()
     }
     else
     {
-        if (c.token == ")")
-        { // all good
-            return;
-        }
-        else if (c.level == 2)
+        if (c.level == 2)
         { // func_call
             func_call();
         }
@@ -300,7 +294,7 @@ void Parser::cond_oper()
             throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Operation " + stack[i] + " accept arguments of type bool, not found: " + t);
         }
     }
-    stack[i] = "bool";        
+    stack[i] = "bool";
 }
 
 void Parser::loop_for()
@@ -524,19 +518,18 @@ void Parser::write()
 {
     int s = stack.size();
     arg();
-    if(stack.size() > s)
+    if (stack.size() > s)
         stack.pop_back();
     poliz.add_lex("write");
-    
+
     while (c.token != ")")
     {
         s = stack.size();
         arg();
-        if(stack.size() > s)
+        if (stack.size() > s)
             stack.pop_back();
         poliz.add_lex("write");
     }
-    
 }
 
 void Parser::read()
@@ -591,7 +584,8 @@ void Parser::incf()
         stack.pop_back();
         return;
     }
-    else{
+    else
+    {
         poliz.add_lex("1");
     }
     if (!(stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double"))
@@ -614,7 +608,8 @@ void Parser::decf()
         stack.pop_back();
         return;
     }
-    else{
+    else
+    {
         poliz.add_lex("1");
     }
     if (!(stack[stack.size() - 1] == "int" || stack[stack.size() - 1] == "double"))
@@ -626,7 +621,49 @@ void Parser::decf()
 void Parser::ret_op()
 {
     c = gc();
-    arg();
+    if (c.level == 2 || c.level == 3)
+    {
+        if (c.level == 3)
+        {
+            stack.push_back(what_type(c.token));
+        }
+        else
+        {
+            stack.push_back(cur_tid->check_name(c.token));
+        }
+        if (c.token == "PRAVDA" || c.token == "LOZH")
+        {
+            poliz.add_lex((c.token == "PRAVDA") ? "true" : "false");
+        }
+        else
+        {
+            poliz.add_lex(c.token);
+        }
+
+        c = gc();
+        // all good
+    }
+    else if (c.token == "(")
+    {
+        poliz.push_stack(c.token);
+        c = gc();
+        oper();
+        // c = gc();
+        if (c.token != ")")
+        {
+            throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of arg close oper parent");
+        }
+        poliz.push_stack(c.token);
+        c = gc();
+    }
+    else if (c.token == ")")
+    {
+        poliz.add_lex("NILL");
+    }
+    else
+    {
+        throw std::logic_error("in line: " + std::to_string(num_of_line) + ". Found " + c.token + " instead of bad argument ");
+    }
     poliz.add_lex("return");
 }
 
@@ -660,7 +697,7 @@ void Parser::setf()
         arg();
 
         std::string type = stack.back();
-        
+
         stack.pop_back();
         if (cur_tid->find(name))
         {
@@ -701,8 +738,6 @@ void Parser::check_func(std::string name, std::vector<std::string> param_type)
 
     c = gc();
 
-    poliz.add_lex("(");
-
     while (true)
     {
         if (c.token != "(")
@@ -722,7 +757,6 @@ void Parser::check_func(std::string name, std::vector<std::string> param_type)
             break;
         }
     }
-    poliz.add_lex(")");
 
     c = gc();
     if (c.token != "(")
@@ -736,9 +770,7 @@ void Parser::check_func(std::string name, std::vector<std::string> param_type)
     }
     int size_stack = stack.size();
 
-    poliz.add_lex("(");
     ret_op();
-    poliz.add_lex(")");
 
     if (size_stack == stack.size())
     {
@@ -869,12 +901,15 @@ void Parser::arg()
         {
             stack.push_back(cur_tid->check_name(c.token));
         }
-        if(c.token == "PRAVDA" || c.token == "LOZH"){
+        if (c.token == "PRAVDA" || c.token == "LOZH")
+        {
             poliz.add_lex((c.token == "PRAVDA") ? "true" : "false");
-        }else{
+        }
+        else
+        {
             poliz.add_lex(c.token);
         }
-        
+
         c = gc();
         // all good
     }

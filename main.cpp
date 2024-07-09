@@ -14,7 +14,7 @@ size_t num_of_line = 1;
 func_TID *func_tid = new func_TID;
 POLIZ poliz;
 
-std::vector<std::string> sys = {"@", "T@", "F@", "setf", "read", "write", "mod", "to_str", "<", ">", "<=", ">=", "=", "!=", "+", "-", "/", "*", "not", "fact", "incf", "decf", "min", "max", "and", "or"};
+std::vector<std::string> sys = {"@", "T@", "F@", "CALL", "return", "setf", "read", "write", "mod", "to_str", "<", ">", "<=", ">=", "=", "!=", "+", "-", "/", "*", "not", "fact", "incf", "decf", "min", "max", "and", "or"};
 
 bool sys_word(std::string w)
 {
@@ -28,6 +28,8 @@ bool sys_word(std::string w)
 
 char is_liter(std::string s)
 {
+    if (s == "NILL")
+        return '-';
     if (s == "true")
         return 't';
     if (s == "false")
@@ -36,7 +38,7 @@ char is_liter(std::string s)
         return 's';
     if (s[0] == '\'')
         return 'c';
-    if (s[0] >= '0' && s[0] <= '9')
+    if ((s[0] >= '0' && s[0] <= '9') || ((s[0] == '+' || s[0] == '-') && (s[1] >= '0' && s[1] <= '9')))
     {
         for (int i = 0; i < s.size(); ++i)
             if (s[i] == '.')
@@ -66,22 +68,6 @@ int main()
     {
         Parser parser(lexes);
         parser.parse();
-        //------------Show_POLIZ------------------
-        poliz.show();
-        for (auto it : func_tid->name_)
-        {
-            auto x = poliz.get_func_info(it);
-            for (auto it : x)
-            {
-                for (auto jt : it)
-                {
-                    std::cout << jt << " ";
-                }
-                std::cout << "\n";
-            }
-            std::cout << "________________\n";
-        }
-        //--------------------------------------------*/
     }
     catch (std::logic_error e)
     {
@@ -93,21 +79,84 @@ int main()
         std::cerr << "Unknown exception" << std::endl;
     }
 
-    std::cout << "Syntax analysis complete sucsessfully\n\n\n\n\n";
-    //
+    std::cout << "Syntax analysis complete sucsessfully\n";
+    //------------Show_POLIZ------------------
+    poliz.show();
+    for (auto it : func_tid->name_)
+    {
+        auto x = poliz.get_func_info(it);
+        for (auto it : x)
+        {
+            for (auto jt : it)
+            {
+                std::cout << jt << " ";
+            }
+            std::cout << "\n";
+        }
+        std::cout << "________________\n\n\n\n\n";
+    }
+    //--------------------------------------------*/
     std::vector<std::string> main_poliz = poliz.getPOLIZ();
+    std::vector<std::string> func_poliz;
     std::vector<std::string> var_name;
     std::vector<char> var_type;
     std::vector<std::string> var_val;
+    std::vector<std::string> rezerv_var_name;
+    std::vector<char> rezerv_var_type;
+    std::vector<std::string> rezerv_var_val;
+    std::vector<std::string> rezerv_stack;
     std::vector<std::string> stack;
+    std::vector<std::string> func_stack;
     int pos = 0;
-
+    int pos_func = 0;
+    bool _func = false;
     while (pos < main_poliz.size())
     {
-        std::string cur = main_poliz[pos];
+        std::string cur;
+        if (_func)
+            cur = func_poliz[pos_func];
+        else
+            cur = main_poliz[pos];
         if (sys_word(cur))
         {
-            if (std::regex_match(cur, std::regex("[+]|-|[*]|/|max|min|and|or|setf|incf|decf|mod|<|>|<=|>=|=|!=")))
+            if (cur == "CALL")
+            {
+                pos_func = -1;
+                std::string func_name = stack.back();
+                stack.pop_back();
+                std::vector<std::vector<std::string>> func_info = poliz.get_func_info(func_name);
+                rezerv_var_name = var_name;
+                rezerv_var_type = var_type;
+                rezerv_var_val = var_val;
+                var_name = func_info[2];
+                var_val.resize(var_name.size());
+                var_type.resize(var_name.size());
+                for (int i = var_name.size() - 1; i >= 0; --i)
+                {
+                    std::string tmp = stack.back();
+                    stack.pop_back();
+                    char tnp = is_liter(tmp);
+                    if (tnp == 'n')
+                    {
+                        for (int i = 0; i < rezerv_var_name.size(); ++i)
+                        {
+                            if (rezerv_var_name[i] == tmp)
+                            {
+                                tnp = rezerv_var_type[i];
+                                tmp = rezerv_var_val[i];
+                                break;
+                            }
+                        }
+                    }
+                    var_val[i] = tmp;
+                    var_type[i] = tnp;
+                }
+                func_poliz = func_info[4];
+                rezerv_stack = stack;
+                stack.clear();
+                _func = true;
+            }
+            else if (std::regex_match(cur, std::regex("[+]|-|[*]|/|max|min|and|or|setf|incf|decf|mod|<|>|<=|>=|=|!=")))
             {
                 std::string s2 = stack.back();
                 stack.pop_back();
@@ -429,6 +478,16 @@ int main()
                 {
                     stack.push_back("\"" + s1 + "\"");
                 }
+                else if (cur == "return")
+                {
+                    _func = false;
+                    var_name = rezerv_var_name;
+                    var_type = rezerv_var_type;
+                    var_val = rezerv_var_val;
+                    stack = rezerv_stack;
+                    if (h1 != '-')
+                        stack.push_back(s1);
+                }
             }
         }
         else
@@ -436,7 +495,10 @@ int main()
             stack.push_back(cur);
         }
     end:
-        ++pos;
+        if (_func)
+            ++pos_func;
+        else
+            ++pos;
     }
     //
 }
@@ -458,5 +520,5 @@ int main()
 (tovarisch i 0)
 (idi_poka i ne_stanet 20 (esli (= (mod i 2) 0)((napishi i))((napishi " - chet\n"))))
 
------- 
+------
 */

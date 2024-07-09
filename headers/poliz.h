@@ -41,13 +41,12 @@ public:
     void inFunc()
     {
         isFuncCal = true;
-        stack = {"("};
+        stack = {};
     }
 
     void outFunc()
     {
         isFuncCal = false;
-        stack.push_back(")");
         funcs_.push_back(stack);
         stack.clear();
     }
@@ -55,7 +54,6 @@ public:
     void outFuncCall(std::string n)
     {
         isFuncCal = false;
-        stack.push_back(")");
         funcs_[func_tid->get_idx(n)] = stack;
         stack.clear();
     }
