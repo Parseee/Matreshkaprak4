@@ -25,10 +25,12 @@ public:
         std::cout << "________________\n";
         for (auto it : funcs_)
         {
+            std::cout << "( ";
             for (auto jt : it)
             {
                 std::cout << jt << " ";
             }
+            std::cout << ") ";
         }
         std::cout << "\n________________\n";
         for (auto it : vec_)
